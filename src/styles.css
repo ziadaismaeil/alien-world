@@ -367,6 +367,33 @@ canvas#canvas {
   opacity: 0.55;
 }
 
+/* ── Camera Mode HUD ──────────────────────────────────────────────────────── */
+#cam-mode-hint {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(8px);
+  color: rgba(255,255,255,0.45);
+  pointer-events: none;
+  white-space: nowrap;
+  transition: color 0.4s, border-color 0.4s, background 0.4s;
+}
+#cam-mode-hint.active {
+  color: rgba(255,255,255,0.9);
+  border-color: rgba(255,255,255,0.5);
+  background: rgba(0,0,0,0.7);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
