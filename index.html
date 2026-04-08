@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WEIMAR MULTIVERSE — Alien Perspectives</title>
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loading-inner">
+      <div class="loading-orb"></div>
+      <div class="loading-text">CALIBRATING REALITIES</div>
+      <div class="loading-sub">Weimar · 2km radius · ∞ perspectives</div>
+    </div>
+  </div>
+
+  <!-- Character Selection Panel -->
+  <div id="character-panel">
+    <div class="panel-header">
+      <h1 class="title">WEIMAR<br><em>MULTIVERSE</em></h1>
+      <p class="subtitle">↓ choose your reality ↓</p>
+    </div>
+    <div id="character-grid">
+      <!-- Injected by ui.js -->
+    </div>
+  </div>
+
+  <!-- Active Character Overlay -->
+  <div id="character-info" class="hidden">
+    <div id="char-symbol"></div>
+    <div id="char-name"></div>
+    <div id="char-planet"></div>
+    <div id="char-personality"></div>
+    <div id="char-backstory"></div>
+  </div>
+
+  <!-- Backstory toggle -->
+  <button id="lore-toggle" class="hidden" title="Toggle lore">?</button>
+
+  <!-- Controls -->
+  <div id="controls-hint">
+    <span>drag</span> to orbit &nbsp;·&nbsp; <span>scroll</span> to zoom &nbsp;·&nbsp; <span>right-drag</span> to pan
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
