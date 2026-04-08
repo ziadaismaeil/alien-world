@@ -337,6 +337,36 @@ canvas#canvas {
   66% { transform: translateX(3px) skewX(2deg); opacity: 0.9; }
 }
 
+/* ── World Labels (CSS2DRenderer) ─────────────────────────────────────────── */
+.world-label {
+  font-family: 'Courier New', monospace;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: color 0.8s ease, border-color 0.8s ease, opacity 0.8s ease;
+  text-shadow: 0 0 8px currentColor, 0 1px 3px rgba(0,0,0,0.9);
+}
+
+.landmark-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+}
+
+.street-label {
+  font-size: 7px;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.6);
+  opacity: 0.55;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }

@@ -2,9 +2,11 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
 import { WeimarWorld } from './world.js';
 import { CHARACTERS, DEFAULT_CHARACTER_ID } from './characters.js';
 import { buildUI, setActiveCard, updateInfoPanel, setupLoreToggle, hideLoading } from './ui.js';
+import { createLabels, updateLabelColors } from './labels.js';
 
 // ── Scene Setup ──────────────────────────────────────────────────────────────
 
@@ -15,7 +17,17 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.3;
+renderer.toneMappingExposure = 1.4;
+
+// ── CSS2D Label Renderer ──────────────────────────────────────────────────────
+
+const labelRenderer = new CSS2DRenderer();
+labelRenderer.setSize(window.innerWidth, window.innerHeight);
+labelRenderer.domElement.style.position = 'fixed';
+labelRenderer.domElement.style.inset = '0';
+labelRenderer.domElement.style.pointerEvents = 'none';
+labelRenderer.domElement.style.zIndex = '5';
+document.body.appendChild(labelRenderer.domElement);
 
 const scene = new THREE.Scene();
 
@@ -35,10 +47,10 @@ controls.target.set(0, 0, 0);
 
 // ── Lights ───────────────────────────────────────────────────────────────────
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+const ambientLight = new THREE.AmbientLight(0xffffff, 2.0);
 scene.add(ambientLight);
 
-const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
+const sunLight = new THREE.DirectionalLight(0xffffff, 3.0);
 sunLight.position.set(60, 100, 40);
 sunLight.castShadow = true;
 sunLight.shadow.mapSize.width  = 2048;
@@ -53,15 +65,14 @@ sunLight.shadow.bias = -0.001;
 scene.add(sunLight);
 
 // Fill light (from below/opposite)
-const fillLight = new THREE.DirectionalLight(0x3344aa, 0.4);
+const fillLight = new THREE.DirectionalLight(0x8899ff, 1.0);
 fillLight.position.set(-40, 30, -60);
 scene.add(fillLight);
 
 // ── Sky Gradient Mesh ─────────────────────────────────────────────────────────
-// Simple skydome with vertex colors top/bottom
 
 const skyGeo = new THREE.SphereGeometry(500, 16, 8);
-skyGeo.scale(-1, 1, 1);  // invert
+skyGeo.scale(-1, 1, 1);
 
 const skyColors = new Float32Array(skyGeo.attributes.position.count * 3);
 const skyTopColor    = new THREE.Color(0x000012);
@@ -81,7 +92,6 @@ const skyMat = new THREE.MeshBasicMaterial({ vertexColors: true, fog: false });
 const skyMesh = new THREE.Mesh(skyGeo, skyMat);
 scene.add(skyMesh);
 
-// Target sky colors for lerping
 let skyTopTarget    = skyTopColor.clone();
 let skyBottomTarget = skyBottomColor.clone();
 const currentTop    = skyTopColor.clone();
@@ -108,29 +118,22 @@ let fogFarTarget = 280;
 // ── World ─────────────────────────────────────────────────────────────────────
 
 const world = new WeimarWorld(scene);
+createLabels(scene);
 
 // ── Character State ───────────────────────────────────────────────────────────
 
 let activeCharacter = null;
-let transitionProgress = 0;
-let transitioning = false;
-
 const charMap = Object.fromEntries(CHARACTERS.map(c => [c.id, c]));
 
 function selectCharacter(id) {
   const char = charMap[id];
-  if (!char) return;
-  if (activeCharacter?.id === id) return;
+  if (!char || activeCharacter?.id === id) return;
 
   activeCharacter = char;
-  transitioning = true;
-  transitionProgress = 0;
-
-  // Update UI
   setActiveCard(id);
   updateInfoPanel(char);
+  updateLabelColors(char.color);
 
-  // Set light targets
   const t = char.theme;
   sunLight.color.set(t.sunColor);
   sunLight.intensity = t.sunIntensity;
@@ -139,11 +142,8 @@ function selectCharacter(id) {
   ambientLight.color.set(t.ambientColor);
   ambientLight.intensity = t.ambientIntensity;
 
-  // Sky targets
   skyTopTarget.setHex(t.skyTop);
   skyBottomTarget.setHex(t.skyBot);
-
-  // Fog targets
   fogColorTarget.setHex(t.fogColor);
   fogNearTarget = t.fogNear;
   fogFarTarget  = t.fogFar;
@@ -155,6 +155,7 @@ window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  labelRenderer.setSize(window.innerWidth, window.innerHeight);
 });
 
 // ── Animation Loop ────────────────────────────────────────────────────────────
@@ -163,8 +164,7 @@ const clock = new THREE.Clock();
 
 function animate() {
   requestAnimationFrame(animate);
-  const time  = clock.getElapsedTime();
-  const delta = clock.getDelta?.() ?? 0.016;
+  const time = clock.getElapsedTime();
 
   controls.update();
 
@@ -172,43 +172,36 @@ function animate() {
     const theme = activeCharacter.theme;
     const speed = 0.05;
 
-    // Lerp sky
     currentTop.lerp(skyTopTarget, speed);
     currentBottom.lerp(skyBottomTarget, speed);
     updateSkyColors();
 
-    // Lerp fog
     scene.fog.color.lerp(fogColorTarget, speed);
     scene.fog.near += (fogNearTarget - scene.fog.near) * speed;
     scene.fog.far  += (fogFarTarget  - scene.fog.far ) * speed;
 
-    // World theme lerp
     world.applyTheme(theme, false);
-
-    // Particles
     world.updateParticles(time, theme);
   }
 
-  // Subtle sky mesh bob
   skyMesh.rotation.y = time * 0.005;
 
   renderer.render(scene, camera);
+  labelRenderer.render(scene, camera);
 }
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 
 function init() {
-  // Build character selection UI
   buildUI(selectCharacter);
   setupLoreToggle();
 
-  // Start with default character (instant, no lerp)
   const defaultChar = charMap[DEFAULT_CHARACTER_ID];
   activeCharacter = defaultChar;
   setActiveCard(DEFAULT_CHARACTER_ID);
   updateInfoPanel(defaultChar);
+  updateLabelColors(defaultChar.color);
 
-  // Apply initial theme instantly
   const t = defaultChar.theme;
   sunLight.color.set(t.sunColor);
   sunLight.intensity = t.sunIntensity;
@@ -230,8 +223,6 @@ function init() {
   updateSkyColors();
 
   animate();
-
-  // Hide loading after brief delay
   setTimeout(hideLoading, 800);
 }
 
