@@ -359,12 +359,21 @@ canvas#canvas {
   color: #ffffff;
 }
 
+.plaza-label {
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+  opacity: 0.65;
+}
+
 .street-label {
   font-size: 7px;
   font-weight: 400;
   letter-spacing: 1.5px;
-  color: rgba(255,255,255,0.6);
-  opacity: 0.55;
+  color: rgba(255,255,255,0.55);
+  opacity: 0.5;
 }
 
 /* ── Camera Mode HUD ──────────────────────────────────────────────────────── */
