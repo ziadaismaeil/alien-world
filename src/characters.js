@@ -66,68 +66,82 @@ export const CHARACTERS = [
   {
     id: 'morra',
     name: 'MORRA',
-    planet: 'Abyssal Bloom',
+    planet: 'Veldan IV (The Wet World)',
     symbol: '✿',
-    personality: 'Warm · Curious · Luminescent',
+    personality: 'Loyal · Impulsive · Nose-First',
     backstory:
-      'Morra drifted up from the deepest trench of a lightless ocean world, ' +
-      'where all life glows with its own bioluminescence and communication ' +
-      'happens through color pulses. Weimar\'s stone buildings look to her like ' +
-      'vast coral formations sleeping on the sea floor. The streets are currents. ' +
-      'She finds the absence of glowing deeply unsettling — and is quietly ' +
-      'fixing that wherever she goes.',
+      'On Veldan IV, Morra\'s kind evolved as pack hunters who navigate entirely by ' +
+      'scent. Vision is secondary. Memory is smell. Love is smell. Danger is smell. ' +
+      'Weimar is, to Morra, an overwhelming cathedral of odor — every building has a ' +
+      'century of scent soaked into its stone, every street corner a library of who ' +
+      'passed and when. Morra experiences none of the architecture. Only its ghost-smell. ' +
+      'And somewhere — always somewhere — the intoxicating trail of cooked meat drifting ' +
+      'from a vendor or restaurant. When that hits, all reason evaporates. The leash goes ' +
+      'taut. The owner sighs. They have been here before.',
     color: '#00ffaa',
     theme: {
-      skyTop: 0x001a25,
-      skyBot: 0x003344,
-      fogColor: 0x002233,
-      fogNear: 70,
-      fogFar: 280,
-      groundColor: 0x003322,
-      groundEmissive: 0x006644,
-      ambientColor: 0x88ffdd,
-      ambientIntensity: 2.2,
-      sunColor: 0xaaffee,
-      sunIntensity: 3.0,
-      fillColor: 0x00bbaa,
-      fillIntensity: 1.4,
-      buildingPalette: [0x00cc99, 0x00eebb, 0x44ffcc, 0x77ddbb, 0x00bb88, 0x55ccaa],
-      buildingEmissive: 0x006655,
-      buildingEmissiveIntensity: 1.4,
-      buildingMetalness: 0.1,
-      buildingRoughness: 0.85,
-      buildingHeightMult: 0.75,
-      groundHex: '#003322',
-      roadHex: '#001a10',
-      parkHex: '#004433',
-      waterHex: '#0066aa',
-      particleColor: 0x00ffaa,
-      particleCount: 900,
-      particleSize: 0.4,
-      particleSpeed: 0.004,
-      particleSpread: 180,
+      // Sky: near-black — the world is perceived through smell, not light
+      skyTop: 0x010301,
+      skyBot: 0x020502,
+      // Fog very close and smell-tinted — shapes dissolve fast into smell-haze
+      fogColor: 0x050f05,
+      fogNear: 18,
+      fogFar: 90,
+      groundColor: 0x010201,
+      groundEmissive: 0x010301,
+      // Lights — muted but city is navigable
+      ambientColor: 0x335533,
+      ambientIntensity: 1.8,
+      sunColor: 0x446644,
+      sunIntensity: 2.0,
+      fillColor: 0x223322,
+      fillIntensity: 0.9,
+      // Buildings: dark green-grey, visible but desaturated
+      buildingPalette: [0x1a2e1a, 0x1e331e, 0x182818, 0x223822, 0x1b2f1b, 0x1f341f],
+      buildingEmissive: 0x061006,
+      buildingEmissiveIntensity: 0.3,
+      buildingMetalness: 0.0,
+      buildingRoughness: 1.0,
+      buildingHeightMult: 0.35,
+      groundHex: '#0a120a',
+      roadHex: '#080e08',
+      parkHex: '#0c160c',
+      waterHex: '#071408',
+      // Particles: smell-colored, dense, small — the air itself feels thick
+      particleColor: 0x00ff88,
+      particleCount: 2200,
+      particleSize: 0.18,
+      particleSpeed: 0.002,
+      particleSpread: 140,
       roofShape: 'dome',
-      treeColor: 0x00aa77,
-      treeTrunkColor: 0x003322,
+      treeColor: 0x030803,
+      treeTrunkColor: 0x020402,
     },
     figure: `
-      <g class="fig-morra" style="animation: morra-float 3s ease-in-out infinite; transform-origin: 50% 30%;">
-        <!-- Bell body -->
-        <ellipse cx="22" cy="22" rx="16" ry="12" fill="rgba(0,255,170,0.15)" stroke="#00ffaa" stroke-width="1.5"/>
-        <ellipse cx="22" cy="22" rx="10" ry="7" fill="rgba(0,255,170,0.1)" stroke="#00cc88" stroke-width="1"/>
-        <!-- Eyes -->
-        <circle cx="17" cy="20" r="3" fill="#00ffaa" opacity="0.9"/>
-        <circle cx="27" cy="20" r="3" fill="#00ffaa" opacity="0.9"/>
-        <circle cx="17" cy="20" r="1.2" fill="white"/>
-        <circle cx="27" cy="20" r="1.2" fill="white"/>
-        <!-- Tentacles -->
-        <path d="M10,32 Q8,42 6,52" stroke="#00ffaa" stroke-width="1.5" fill="none" opacity="0.7" style="animation: wiggle 2s ease-in-out infinite;"/>
-        <path d="M15,33 Q13,43 14,54" stroke="#00cc88" stroke-width="1.5" fill="none" opacity="0.6" style="animation: wiggle 2.3s ease-in-out infinite 0.2s;"/>
-        <path d="M22,34 Q22,44 22,55" stroke="#00ffaa" stroke-width="1.5" fill="none" opacity="0.7" style="animation: wiggle 1.8s ease-in-out infinite 0.4s;"/>
-        <path d="M29,33 Q31,43 30,54" stroke="#00cc88" stroke-width="1.5" fill="none" opacity="0.6" style="animation: wiggle 2.1s ease-in-out infinite 0.1s;"/>
-        <path d="M34,32 Q36,42 38,52" stroke="#00ffaa" stroke-width="1.5" fill="none" opacity="0.7" style="animation: wiggle 2.4s ease-in-out infinite 0.3s;"/>
-        <!-- Crown -->
-        <path d="M8,16 Q22,8 36,16" stroke="#00ffaa" stroke-width="1" fill="none" opacity="0.5"/>
+      <g class="fig-morra" style="animation: morra-trot 0.6s ease-in-out infinite; transform-origin: 50% 60%;">
+        <!-- Body -->
+        <ellipse cx="22" cy="36" rx="14" ry="9" fill="rgba(0,255,170,0.18)" stroke="#00ffaa" stroke-width="1.5"/>
+        <!-- Head -->
+        <ellipse cx="34" cy="26" rx="9" ry="7" fill="rgba(0,255,170,0.2)" stroke="#00ffaa" stroke-width="1.5"/>
+        <!-- Snout -->
+        <ellipse cx="40" cy="29" rx="5" ry="3.5" fill="rgba(0,200,130,0.3)" stroke="#00cc88" stroke-width="1"/>
+        <circle cx="42" cy="29" r="1.5" fill="#00ffaa" opacity="0.8"/>
+        <!-- Eye -->
+        <circle cx="35" cy="23" r="2.5" fill="#00ffaa" opacity="0.9"/>
+        <circle cx="35" cy="23" r="1.2" fill="#003322"/>
+        <circle cx="34.3" cy="22.3" r="0.7" fill="white"/>
+        <!-- Ear (floppy) -->
+        <path d="M29,20 Q26,14 28,10" stroke="#00ffaa" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- Tail (up and curved) -->
+        <path d="M8,32 Q2,24 6,18" stroke="#00ffaa" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- 4 Legs -->
+        <line x1="14" y1="44" x2="12" y2="56" stroke="#00cc88" stroke-width="2" stroke-linecap="round"/>
+        <line x1="20" y1="45" x2="19" y2="57" stroke="#00cc88" stroke-width="2" stroke-linecap="round"/>
+        <line x1="26" y1="45" x2="27" y2="57" stroke="#00cc88" stroke-width="2" stroke-linecap="round"/>
+        <line x1="32" y1="44" x2="34" y2="56" stroke="#00cc88" stroke-width="2" stroke-linecap="round"/>
+        <!-- Smell wisps -->
+        <path d="M41,26 Q46,20 44,14" stroke="#00ffaa" stroke-width="0.8" fill="none" opacity="0.5" stroke-dasharray="2,2"/>
+        <path d="M40,24 Q47,18 46,10" stroke="#00cc88" stroke-width="0.8" fill="none" opacity="0.4" stroke-dasharray="2,2"/>
       </g>`,
   },
 
@@ -280,14 +294,16 @@ export const CHARACTERS = [
     name: 'VEX',
     planet: 'Mycelios-7',
     symbol: '☁',
-    personality: 'Chaotic · Gleeful · Decomposing',
+    personality: 'Chaotic · Academic · Decomposing',
     backstory:
-      'Vex is a sentient mycelium colony that accidentally formed consciousness on ' +
-      'Mycelios-7, a planet choked with fungal mega-organisms ten kilometers tall. ' +
-      'Weimar\'s buildings are basically large immobile food sources. The streets are ' +
-      'just the spaces between meals. Citizens are slow mushrooms with delusions. ' +
-      'Vex finds the whole situation absolutely hilarious and has been quietly ' +
-      'inoculating everything with spores since arrival.',
+      'Vex enrolled in Bauhaus-Universität\'s Mycelial Architecture programme three ' +
+      'semesters ago and has not submitted a single assignment on time since. Their ' +
+      'thesis — "Decomposition as Design Methodology: A Post-Structural Spore ' +
+      'Framework" — has been cited zero times but referenced in seven conspiracy ' +
+      'forums. Weimar is Vex\'s campus. Every building a classroom, every street a ' +
+      'corridor between lectures, every open square a study group waiting to happen. ' +
+      'Vex knows every student hangout within the 2km radius and cannot physically ' +
+      'pass one without stopping for a "quick five minutes" that always runs over.',
     color: '#88ff00',
     theme: {
       skyTop: 0x0d1500,
@@ -353,18 +369,116 @@ export const CHARACTERS = [
   },
 
   {
+    id: 'niko',
+    name: 'NIKO',
+    planet: 'Minima (a speck of cosmic dust)',
+    symbol: '★',
+    personality: 'Joyful · Curious · Boundless',
+    backstory:
+      'Niko hatched from a luminous crystal on Minima — a particle of stardust so ' +
+      'small you could swallow it whole. On Minima, a pebble is a mountain. Here, ' +
+      'real mountains must exist somewhere impossibly far beyond the sky. Weimar ' +
+      'arrived like a hallucination: buildings stretching up forever, streets like ' +
+      'endless canyons, trees tall as Minima\'s entire atmosphere. The puddles are ' +
+      'oceans. Every doorway is a cave. But the playgrounds — those sacred clearings ' +
+      'full of swinging, sliding, sand-magic metal — are the most wondrous things in ' +
+      'any universe. Niko has visited every single one. Twice. Arms always wide open.',
+    color: '#ff77cc',
+    theme: {
+      skyTop: 0x0d0520,
+      skyBot: 0x2a0a50,
+      fogColor: 0x180630,
+      fogNear: 30,
+      fogFar: 160,
+      groundColor: 0x0a0518,
+      groundEmissive: 0x2a0845,
+      ambientColor: 0xffccff,
+      ambientIntensity: 3.2,
+      sunColor: 0xffeeff,
+      sunIntensity: 4.5,
+      fillColor: 0xff88ff,
+      fillIntensity: 2.0,
+      buildingPalette: [0xff8899, 0xffbb44, 0x88ddff, 0xbbff99, 0xffaacc, 0xaabbff],
+      buildingEmissive: 0x440022,
+      buildingEmissiveIntensity: 0.9,
+      buildingMetalness: 0.1,
+      buildingRoughness: 0.75,
+      buildingHeightMult: 2.8,
+      groundHex: '#0a0518',
+      roadHex: '#080312',
+      parkHex: '#071810',
+      waterHex: '#2255cc',
+      particleColor: 0xffaaee,
+      particleCount: 1400,
+      particleSize: 0.3,
+      particleSpeed: 0.012,
+      particleSpread: 190,
+      roofShape: 'bubble',
+      treeColor: 0x44ff99,
+      treeTrunkColor: 0x441100,
+      playgroundGlow: true,
+      playgroundEmissive: 0xffdd00,
+      playgroundEmissiveIntensity: 3.5,
+    },
+    figure: `
+      <g class="fig-niko" style="animation: niko-wonder 1.2s ease-in-out infinite; transform-origin: 50% 58%;">
+        <!-- Aura glow -->
+        <circle cx="22" cy="17" r="19" fill="rgba(255,119,204,0.06)" stroke="rgba(255,119,204,0.18)" stroke-width="0.5"/>
+        <!-- Big round head -->
+        <circle cx="22" cy="17" r="13" fill="rgba(255,119,204,0.2)" stroke="#ff77cc" stroke-width="2"/>
+        <circle cx="22" cy="17" r="9" fill="rgba(255,170,220,0.1)" stroke="#ffaadd" stroke-width="0.8"/>
+        <!-- Huge wonder eyes -->
+        <circle cx="14.5" cy="14" r="5.5" fill="white" opacity="0.95"/>
+        <circle cx="29.5" cy="14" r="5.5" fill="white" opacity="0.95"/>
+        <circle cx="14.5" cy="14" r="3.5" fill="#cc44aa"/>
+        <circle cx="29.5" cy="14" r="3.5" fill="#cc44aa"/>
+        <circle cx="13.5" cy="13" r="2" fill="#111"/>
+        <circle cx="28.5" cy="13" r="2" fill="#111"/>
+        <!-- Sparkle highlights in eyes -->
+        <circle cx="15" cy="12" r="1.1" fill="white"/>
+        <circle cx="30" cy="12" r="1.1" fill="white"/>
+        <circle cx="13" cy="14.5" r="0.6" fill="rgba(255,255,255,0.55)"/>
+        <circle cx="28" cy="14.5" r="0.6" fill="rgba(255,255,255,0.55)"/>
+        <!-- Amazed O-mouth -->
+        <ellipse cx="22" cy="23.5" rx="2.8" ry="2.2" fill="none" stroke="#ff77cc" stroke-width="1.5"/>
+        <!-- Rosy alien cheeks -->
+        <circle cx="9" cy="18" r="3.5" fill="rgba(255,88,160,0.22)"/>
+        <circle cx="35" cy="18" r="3.5" fill="rgba(255,88,160,0.22)"/>
+        <!-- Small body (kid proportions) -->
+        <ellipse cx="22" cy="40" rx="6.5" ry="9" fill="rgba(255,119,204,0.15)" stroke="#ff77cc" stroke-width="1.5"/>
+        <!-- Arms raised up — excited! -->
+        <path d="M15.5,36 Q8,29 6,22" stroke="#ff77cc" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <path d="M28.5,36 Q36,29 38,22" stroke="#ff77cc" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <circle cx="6" cy="21" r="2.8" fill="#ff77cc" opacity="0.88"/>
+        <circle cx="38" cy="21" r="2.8" fill="#ff77cc" opacity="0.88"/>
+        <!-- Short legs -->
+        <path d="M19,49 Q17,54 15.5,59" stroke="#ff77cc" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M25,49 Q27,54 28.5,59" stroke="#ff77cc" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="15" cy="59.5" rx="2.8" ry="1.5" fill="#ffaade" opacity="0.7"/>
+        <ellipse cx="29" cy="59.5" rx="2.8" ry="1.5" fill="#ffaade" opacity="0.7"/>
+        <!-- Floating sparkles (small diamonds) -->
+        <polygon points="4,6 5.3,8 4,10 2.7,8" fill="#ffdd00" opacity="0.8"/>
+        <polygon points="39,4 40.3,6 39,8 37.7,6" fill="#88ffdd" opacity="0.7"/>
+        <polygon points="2,35 3.3,37 2,39 0.7,37" fill="#ff77cc" opacity="0.6"/>
+        <polygon points="40,31 41.3,33 40,35 38.7,33" fill="#ffddaa" opacity="0.65"/>
+      </g>`,
+  },
+
+  {
     id: 'solen',
     name: 'SOLEN',
     planet: 'Aurantia (The Dying Star)',
     symbol: '◎',
-    personality: 'Melancholic · Ancient · Wistful',
+    personality: 'Determined · Frustrated · Resilient',
     backstory:
-      'Solen\'s civilization lasted 800 million years on a planet orbiting a dying ' +
-      'red giant. They have watched their entire world slowly turn to dust — oceans ' +
-      'evaporate, mountains crumble, stars fade. Weimar, with its mere thousand-year ' +
-      'history, looks to Solen like a hasty cartoon — endearingly fragile ruins that ' +
-      'haven\'t realized they\'re ruins yet. Solen finds humans touching in the same ' +
-      'way one finds mayflies touching.',
+      'On Aurantia, Solen lost mobility in a volcanic collapse that reshaped half the ' +
+      'continent. Eight hundred million years of civilization and they never designed a ' +
+      'single ramp. Weimar is little different. Every cobblestone is a small war. Every ' +
+      'curb without a cut is a wall. Every "historic" stepped entrance a door that says ' +
+      '"not you." Solen navigates Weimar in an amber-lattice transit chair that hums ' +
+      'with residual stellar energy — slower than everyone, stopped by things no one ' +
+      'else notices. The city is not inaccessible by accident. That is what makes it ' +
+      'so exhausting.',
     color: '#ffaa44',
     theme: {
       skyTop: 0x1e0a00,
@@ -398,31 +512,36 @@ export const CHARACTERS = [
       roofShape: 'ruined',
       treeColor: 0x886644,
       treeTrunkColor: 0x442200,
+      charMoveSpeed: 0.14,
     },
     figure: `
-      <g class="fig-solen" style="animation: solen-drift 5s ease-in-out infinite; transform-origin: 50% 50%;">
-        <!-- Cloak/robe (ghostly) -->
-        <ellipse cx="22" cy="22" rx="14" ry="12" fill="rgba(255,170,68,0.1)" stroke="#ffaa44" stroke-width="1"/>
-        <!-- Hood -->
-        <ellipse cx="22" cy="14" rx="10" ry="9" fill="rgba(255,170,68,0.15)" stroke="#ffaa44" stroke-width="1.5"/>
-        <!-- Inner face glow -->
-        <ellipse cx="22" cy="16" rx="6" ry="6" fill="rgba(255,170,68,0.2)" stroke="#ffcc88" stroke-width="1"/>
-        <!-- Ancient eyes (tired) -->
-        <circle cx="18" cy="15" r="2.5" fill="#ffaa44" opacity="0.7"/>
-        <circle cx="26" cy="15" r="2.5" fill="#ffaa44" opacity="0.7"/>
-        <line x1="16" y1="15" x2="20" y2="15" stroke="#aa6622" stroke-width="1.5"/> <!-- half-closed -->
-        <line x1="24" y1="15" x2="28" y2="15" stroke="#aa6622" stroke-width="1.5"/>
-        <!-- Sad mouth -->
-        <path d="M18,22 Q22,20 26,22" stroke="#ffaa44" stroke-width="1" fill="none" opacity="0.6"/>
-        <!-- Flowing robe bottom -->
-        <path d="M8,28 Q6,40 8,55 Q22,60 36,55 Q38,40 36,28" fill="rgba(255,170,68,0.08)" stroke="#ffaa44" stroke-width="1" opacity="0.6"/>
-        <!-- Ancient markings -->
-        <path d="M14,34 Q16,38 14,42" stroke="#ffaa44" stroke-width="0.8" fill="none" opacity="0.4"/>
-        <path d="M30,34 Q28,38 30,42" stroke="#ffaa44" stroke-width="0.8" fill="none" opacity="0.4"/>
-        <!-- Dust particles -->
-        <circle cx="5" cy="20" r="1" fill="#ffaa44" opacity="0.3"/>
-        <circle cx="40" cy="35" r="1.5" fill="#ff8800" opacity="0.25"/>
-        <circle cx="2" cy="45" r="1" fill="#ffaa44" opacity="0.2"/>
+      <g class="fig-solen" style="animation: solen-roll 3s ease-in-out infinite; transform-origin: 50% 65%;">
+        <!-- Head -->
+        <circle cx="22" cy="10" r="7" fill="rgba(255,170,68,0.2)" stroke="#ffaa44" stroke-width="1.5"/>
+        <circle cx="19" cy="9" r="1.8" fill="#ffaa44" opacity="0.8"/>
+        <circle cx="25" cy="9" r="1.8" fill="#ffaa44" opacity="0.8"/>
+        <line x1="17.5" y1="9" x2="20.5" y2="9" stroke="#aa5500" stroke-width="1.2"/>
+        <line x1="23.5" y1="9" x2="26.5" y2="9" stroke="#aa5500" stroke-width="1.2"/>
+        <!-- Torso (seated) -->
+        <rect x="14" y="18" width="14" height="12" rx="3" fill="rgba(255,170,68,0.15)" stroke="#ffaa44" stroke-width="1.2"/>
+        <!-- Armrests -->
+        <line x1="14" y1="21" x2="8" y2="21" stroke="#ff8800" stroke-width="1.5"/>
+        <line x1="28" y1="21" x2="34" y2="21" stroke="#ff8800" stroke-width="1.5"/>
+        <!-- Wheelchair frame -->
+        <line x1="28" y1="30" x2="32" y2="44" stroke="#ffaa44" stroke-width="1.5"/>
+        <line x1="14" y1="30" x2="10" y2="44" stroke="#ffaa44" stroke-width="1.2"/>
+        <!-- Big rear wheel (right) -->
+        <circle cx="32" cy="46" r="9" fill="none" stroke="#ff8800" stroke-width="1.5"/>
+        <circle cx="32" cy="46" r="5" fill="none" stroke="#ffaa44" stroke-width="0.8" opacity="0.5"/>
+        <line x1="32" y1="37" x2="32" y2="55" stroke="#ffaa44" stroke-width="0.7" opacity="0.6"/>
+        <line x1="23" y1="46" x2="41" y2="46" stroke="#ffaa44" stroke-width="0.7" opacity="0.6"/>
+        <!-- Small front caster (left) -->
+        <circle cx="10" cy="47" r="4.5" fill="none" stroke="#ff8800" stroke-width="1.2"/>
+        <!-- Footrest -->
+        <line x1="14" y1="30" x2="8" y2="36" stroke="#ffaa44" stroke-width="1.2"/>
+        <line x1="6" y1="36" x2="14" y2="36" stroke="#ffaa44" stroke-width="1.5"/>
+        <!-- Energy glow -->
+        <circle cx="32" cy="46" r="11" fill="none" stroke="#ff8800" stroke-width="0.5" opacity="0.3"/>
       </g>`,
   },
 ];

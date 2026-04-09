@@ -239,6 +239,7 @@ canvas#canvas {
   max-height: 200px;
   overflow-y: auto;
   transition: max-height 0.4s;
+  pointer-events: auto;
 }
 #character-info.lore-hidden #char-backstory { max-height: 0; overflow: hidden; }
 
@@ -326,6 +327,12 @@ canvas#canvas {
   75% { transform: translateY(-3px) rotate(-3deg); }
   100% { transform: translateY(0) rotate(0deg); }
 }
+@keyframes morra-trot {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  25%       { transform: translateY(-4px) rotate(1deg); }
+  50%       { transform: translateY(-1px) rotate(2deg); }
+  75%       { transform: translateY(-5px) rotate(-1deg); }
+}
 @keyframes vex-bounce {
   0%, 100% { transform: scaleY(1) scaleX(1); }
   30% { transform: scaleY(0.8) scaleX(1.2); }
@@ -335,6 +342,17 @@ canvas#canvas {
   0%, 100% { transform: translateX(0) skewX(0deg); opacity: 0.7; }
   33% { transform: translateX(-3px) skewX(-2deg); opacity: 0.5; }
   66% { transform: translateX(3px) skewX(2deg); opacity: 0.9; }
+}
+@keyframes solen-roll {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(2px) rotate(1deg); }
+  75% { transform: translateX(-2px) rotate(-1deg); }
+}
+@keyframes niko-wonder {
+  0%, 100% { transform: translateY(0) scale(1); }
+  25% { transform: translateY(-6px) scale(1.06); }
+  55% { transform: translateY(-4px) scale(1.03); }
+  80% { transform: translateY(-1px) scale(1.01); }
 }
 
 /* ── World Labels (CSS2DRenderer) ─────────────────────────────────────────── */
@@ -400,6 +418,105 @@ canvas#canvas {
   color: rgba(255,255,255,0.9);
   border-color: rgba(255,255,255,0.5);
   background: rgba(0,0,0,0.7);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ── Chat Lock HUD (Vex student interactions) ─────────────────────────────── */
+#chat-hud {
+  position: fixed;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 8px 22px;
+  border-radius: 20px;
+  border: 1px solid #88ff00;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(8px);
+  color: #88ff00;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: pulse-glow 0.8s ease-in-out infinite;
+}
+
+/* ── Smell HUD (MORRA) ────────────────────────────────────────────────────── */
+#smell-hud {
+  position: fixed;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 8px 22px;
+  border-radius: 20px;
+  border: 1px solid #00ffaa;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(8px);
+  color: #00ffaa;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: pulse-glow 0.7s ease-in-out infinite;
+}
+
+/* ── Accessibility HUD (SOLEN) ────────────────────────────────────────────── */
+#a11y-hud {
+  position: fixed;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 7px 20px;
+  border-radius: 20px;
+  border: 1px solid #ffaa44;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(8px);
+  color: #ffaa44;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: color 0.3s, border-color 0.3s;
+}
+#a11y-hud.slowed {
+  color: #ff8800;
+  border-color: #ff8800;
+  animation: pulse-glow 1.2s ease-in-out infinite;
+}
+#a11y-hud.blocked {
+  color: #ff3300;
+  border-color: #ff3300;
+  animation: pulse-glow 0.6s ease-in-out infinite;
+}
+
+/* ── Building Entry HUD (VEX) ─────────────────────────────────────────────── */
+#building-hud {
+  position: fixed;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 8px 24px;
+  border-radius: 20px;
+  border: 1px solid #aaddff;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(8px);
+  color: #aaddff;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: pulse-glow 1.4s ease-in-out infinite;
+}
+#building-hud.inside {
+  border-color: #ffcc44;
+  color: #ffcc44;
   animation: pulse-glow 2s ease-in-out infinite;
 }
 

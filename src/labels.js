@@ -2,6 +2,7 @@
 // Origin = Markt (OSM), 1 unit = 10m, X=East, Z=South
 
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+import { WORLD_SPREAD } from './world.js';
 
 // Landmark labels — floated above buildings
 const LANDMARK_LABELS = [
@@ -46,12 +47,13 @@ const STREET_LABELS = [
 const allLabels = [];
 
 export function createLabels(scene) {
+  const S = WORLD_SPREAD;
   LANDMARK_LABELS.forEach(({ text, x, y, z }) => {
     const el = document.createElement('div');
     el.className = 'world-label landmark-label';
     el.textContent = text;
     const obj = new CSS2DObject(el);
-    obj.position.set(x, y, z);
+    obj.position.set(x * S, y, z * S);
     scene.add(obj);
     allLabels.push({ el, type: 'landmark' });
   });
@@ -61,7 +63,7 @@ export function createLabels(scene) {
     el.className = 'world-label plaza-label';
     el.textContent = text;
     const obj = new CSS2DObject(el);
-    obj.position.set(x, y, z);
+    obj.position.set(x * S, y, z * S);
     scene.add(obj);
     allLabels.push({ el, type: 'plaza' });
   });
@@ -71,7 +73,7 @@ export function createLabels(scene) {
     el.className = 'world-label street-label';
     el.textContent = text;
     const obj = new CSS2DObject(el);
-    obj.position.set(x, y, z);
+    obj.position.set(x * S, y, z * S);
     scene.add(obj);
     allLabels.push({ el, type: 'street' });
   });
