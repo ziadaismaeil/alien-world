@@ -43,6 +43,7 @@ export class Player {
       });
     }
     this.model = (MODEL_BUILDERS[char.id] ?? buildFallback)(char.color);
+    this.model.rotation.y = Math.PI; // face forward (movement direction is -Z)
     this.group.add(this.model);
   }
 
