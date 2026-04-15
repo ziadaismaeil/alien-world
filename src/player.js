@@ -2,8 +2,19 @@
 
 import * as THREE from 'three';
 
-const MOVE_SPEED   = 0.35;
-const ROTATE_SPEED = 0.045;
+const MOVE_SPEED    = 0.35;
+const ROTATE_SPEED  = 0.045;
+const PLAYER_RADIUS = 1.5;
+
+function collidesBuilding(px, pz, colliders) {
+  for (const c of colliders) {
+    if (px + PLAYER_RADIUS > c.minX && px - PLAYER_RADIUS < c.maxX &&
+        pz + PLAYER_RADIUS > c.minZ && pz - PLAYER_RADIUS < c.maxZ) {
+      return true;
+    }
+  }
+  return false;
+}
 
 // ── Key State ────────────────────────────────────────────────────────────────
 export const keys = {};
@@ -29,6 +40,7 @@ export class Player {
     this._locked         = false;
     this._lockTimer      = 0;
     this._attractTarget  = null; // Vector3 — set for attract-move, null for freeze
+    this._colliders      = [];   // AABB building colliders from WeimarWorld
   }
 
   lockFor(seconds) {
@@ -43,6 +55,8 @@ export class Player {
     this._lockTimer     = seconds;
     this._attractTarget = new THREE.Vector3(x, 0, z);
   }
+
+  setColliders(colliders) { this._colliders = colliders; }
 
   get isLocked()    { return this._locked; }
   getLockTimer()    { return this._lockTimer; }
@@ -92,8 +106,12 @@ export class Player {
 
           // Run at 1.5× normal speed — excited dash
           const speed = (this.charMoveSpeed ?? MOVE_SPEED) * 1.5;
-          this.group.position.x -= Math.sin(this.group.rotation.y) * speed;
-          this.group.position.z -= Math.cos(this.group.rotation.y) * speed;
+          const stepX = -Math.sin(this.group.rotation.y) * speed;
+          const stepZ = -Math.cos(this.group.rotation.y) * speed;
+          const nx = this.group.position.x + stepX;
+          const nz = this.group.position.z + stepZ;
+          if (!collidesBuilding(nx, this.group.position.z, this._colliders)) this.group.position.x = nx;
+          if (!collidesBuilding(this.group.position.x, nz, this._colliders)) this.group.position.z = nz;
           this.isMoving = true;
         } else {
           this.isMoving = false;
@@ -120,13 +138,12 @@ export class Player {
     if (d) this.group.rotation.y -= ROTATE_SPEED;
 
     const ry = this.group.rotation.y;
-    if (w) {
-      this.group.position.x -= Math.sin(ry) * speed;
-      this.group.position.z -= Math.cos(ry) * speed;
-    }
-    if (s) {
-      this.group.position.x += Math.sin(ry) * speed;
-      this.group.position.z += Math.cos(ry) * speed;
+    if (w || s) {
+      const sign = w ? -1 : 1;
+      const nx = this.group.position.x + Math.sin(ry) * speed * sign;
+      const nz = this.group.position.z + Math.cos(ry) * speed * sign;
+      if (!collidesBuilding(nx, this.group.position.z, this._colliders)) this.group.position.x = nx;
+      if (!collidesBuilding(this.group.position.x, nz, this._colliders)) this.group.position.z = nz;
     }
     this.group.position.y = 0;
 

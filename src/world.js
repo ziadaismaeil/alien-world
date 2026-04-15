@@ -53,121 +53,206 @@ const STREETS = [
 
 // ── Buildings ─────────────────────────────────────────────────────────────────
 // [cx, cz, width(E-W), depth(N-S), baseHeight, type, rotY=0]
-// Positions based on GPS-derived coordinates (1 unit = 10m, origin = Markt)
+// Positions from OSM (Overpass API) + GPS formula: 1 unit ≈ 10m, origin = Markt
+// cx = (lon − 11.3298) × 7007   |   cz = (50.9794 − lat) × 11132
 //
-// LANDMARKS ─────────────────────────────────────────────────────
 const BUILDINGS = [
-  // Nationaltheater (Theaterplatz) – wide neoclassical, 107m×73m
-  [-35, -3,  11, 7, 10, 'theater', 0],
 
-  // Stadtschloss / City Palace – large complex, runs N-S along Ilm
-  [ 21,-14,  10,12, 18, 'palace', 0],
+  // ── LANDMARKS (GPS-verified against OSM) ─────────────────────────────────
+  // DNT Nationaltheater – ~75m × 55m neoclassical
+  [-35, -3,   7, 5, 12, 'theater', 0],
+  // Stadtschloss – palace complex ~100m × 80m
+  [ 21,-14,  10, 8, 18, 'palace', 0],
+  // Herderkirche – nave 20m wide, 50m long (N-S)
+  [ -4,-20,   2, 5, 15, 'church', 0],
+  // Anna Amalia Bibliothek – ~25m × 45m + rotunda
+  [ 17, 10, 2.5, 4, 14, 'library', 0],
+  // Goethehaus – narrow townhouse ~15m × 20m
+  [ -7, 21,   1.5, 2, 17, 'goethehaus', 0],
+  // Schillerhaus – narrow townhouse ~12m × 14m
+  [-14,  5,  1.5,1.4, 15, 'schillerhaus', 0],
+  // Wittumspalais – baroque palace ~40m × 35m
+  [-20,-10,   4, 3.5, 12, 'palace', 0],
+  // Neues Bauhaus Museum – long slab ~90m × 20m
+  [-38,-60,   9, 2,   9, 'bauhaus_slab', 0],
+  // Bauhaus-Universität main building ~60m × 30m
+  [  2, 41,   6, 3,  14, 'university', 0],
+  // Hauptbahnhof – ~130m × 25m
+  [-24,-85,  13, 2.5, 12, 'station', 0],
 
-  // Herderkirche (St. Peter & Paul) – Gothic nave + tower
-  [ -4,-20,   5, 3, 15, 'church', 0],
+  // ── OSM INNER-CITY BUILDINGS ──────────────────────────────────────────────
+  // Rathaus am Markt – OSM 27244393 ~25m × 15m, 3 fl
+  [ -4,  0,   2.5,1.5, 10, 'old_town', 0],
+  // Goethekaufhaus – OSM 41897796 ~45m × 25m, 4 fl
+  [-32, -9,   4.5,2.5, 14, 'old_town', 0],
+  // Haus der Erholung – OSM 28743728 ~30m × 20m, 2 fl
+  [-27,-23,   3, 2,    8, 'old_town', 0],
+  // Sparkasse – OSM 28743606 ~25m × 18m
+  [-13,-28,   2.5,1.8,  8, 'old_town', 0],
+  // Lesemuseum – OSM 43933506 ~20m × 15m
+  [-29,-18,   2, 1.5,   9, 'old_town', 0],
+  // Apartments near Nationaltheater – OSM 41950597 ~35m × 20m
+  [-18,  7,   3.5, 2,  10, 'old_town', 0],
+  // Reithaus – OSM 83974700 ~30m × 20m
+  [ 25,  3,   3, 2,     8, 'old_town', 0],
+  // Hotel near Frauenplan – ~30m × 20m
+  [ -2, 35,   3, 2,    10, 'old_town', 0],
+  // Langer Jakob dormitory – OSM 28382668, 11 floors ~50m × 30m
+  [ -7,-53,   5, 3,    35, 'residential', 0],
+  // Thüringer Landesverwaltungsamt – OSM 27533513 ~60m × 40m
+  [-18,-59,   6, 4,    10, 'old_town', 0],
+  // Musikschule J.N. Hummel – OSM 89178904 ~40m × 25m
+  [-33,-53,   4, 2.5,   8, 'university', 0],
+  // Hauptpostamt – OSM 89178911 ~45m × 30m
+  [-34,-31,   4.5, 3,   8, 'old_town', 0],
+  // Stadtverwaltung NE – OSM 28743530 ~45m × 30m
+  [ 38,-31,   4.5, 3,   8, 'old_town', 0],
+  // Cluster NE – OSM 28743540 ~20m × 15m
+  [ 41,-27,   2, 1.5,   8, 'old_town', 0],
+  // Goethes Gartenhaus (park SE) – OSM 29463016
+  [ 49, 38,   2, 1.5,   8, 'old_town', 0.3],
+  // Römisches Haus (park SE)
+  [ 44, 32,   3.5,2.5,  8, 'old_town', 0.2],
 
-  // Anna Amalia Bibliothek – narrow building + rotunda tower
-  [ 17, 10,  2.5, 6, 14, 'library', 0],
+  // ── OSM UNIVERSITY / INSTITUTION DISTRICT (NW) ───────────────────────────
+  // Gemeinschaftsschule – OSM 54149052 ~50m × 30m
+  [-43, 11,   5, 3,    10, 'university', 0],
+  // Centrum Intelligentes Bauen – OSM 55995387 ~45m × 30m
+  [-45,-14,   4.5, 3,  10, 'university', 0],
+  // Friedrich-August-Finger-Bau – OSM 89166164 ~55m × 30m
+  [-51,-24,   5.5, 3,  10, 'university', 0],
+  // Bauhaus b.is Technikum – OSM 89166138 ~45m × 30m
+  [-48,-30,   4.5, 3,  10, 'university', 0],
+  // Bauhaus-Uni cluster NW1 – OSM 89166150
+  [-54,-20,   4.5, 3,   8, 'university', 0],
+  // Bauhaus-Uni cluster NW2 – OSM 89166152
+  [-54,-28,   4.5, 3,  10, 'university', 0],
+  // University annex NW3 – OSM 89166172
+  [-47,-34,   4.5, 3,  10, 'university', 0],
+  // Thüringenkolleg – OSM 89166157
+  [-51,-58,   5, 3,    10, 'university', 0],
+  // Schools S near Geschwister-Scholl-Str – OSM 54255905/06/07
+  [-19, 42,   5, 3,    12, 'university', 0],
+  [-23, 43,   4, 2.5,   6, 'university', 0],
+  [-18, 36,   4, 2.5,   6, 'university', 0],
 
-  // Goethehaus (Frauenplan) – tall narrow townhouse
-  [ -7, 21,   2, 3, 17, 'goethehaus', 0],
+  // ── OSM RESIDENTIAL (NW near university) ─────────────────────────────────
+  // Consolidated OSM ids 89166142/145/146/169/176/178
+  // [-47,-20] & [-48,-24] merged into [-46,-22] block; [-20,-51] removed (dup)
+  [-46,-22,   5, 4,    10, 'residential', 0],
+  [-43,-22,   4, 3,    10, 'residential', 0],
+  [-40,-23,   4, 3,     8, 'residential', 0],
+  [-21,-52,   4, 3,     8, 'residential', 0],
+  [-21,-44,   4, 3,     8, 'residential', 0],
 
-  // Schillerhaus – small narrow townhouse
-  [-14,  5,  1.8, 1.5, 15, 'schillerhaus', 0],
+  // ── HISTORIC CORE ─────────────────────────────────────────────────────────
+  // N of Markt toward Herderplatz
+  [ -6, -8,   5, 4,    17, 'old_town', 0],
+  [  5, -8,   5, 4,    18, 'old_town', 0],
+  [ 12, -8,   5, 4,    15, 'old_town', 0],
+  [-14, -8,   4, 3,    20, 'old_town', 0],
+  [  0,-14,   5, 4,    15, 'old_town', 0],
+  [  8,-14,   4, 3,    13, 'old_town', 0],
+  [-20,-16,   5, 4,    13, 'old_town', 0],  // clear of Wittumspalais [-20,-10,4,3.5]
+  [-10,-16,   5, 4,    14, 'old_town', 0],
 
-  // Wittumspalais – modest baroque palace
-  [-20,-10,   6, 5, 12, 'palace', 0],
+  // E of Markt toward Platz der Demokratie / river
+  [ 14,  2,   5, 5,    18, 'old_town', 0],
+  [ 22, -2,   5, 5,    16, 'old_town', 0],
+  [ 22,  6,   5, 5,    14, 'old_town', 0],
+  [ 28,  2,   4, 4,    13, 'old_town', 0],
+  [ 32, -8,   5, 4,    11, 'old_town', 0],
+  [ 30,  8,   5, 4,    13, 'old_town', 0],
 
-  // New Bauhaus Museum (2019, Stéphane-Hessel-Platz) – long E-W slab
-  [-38,-60,   9, 2, 8, 'bauhaus_slab', 0],
+  // S of Markt toward Frauenplan
+  [ -1,  8,   5, 4,    18, 'old_town', 0],
+  [  7, 10,   5, 5,    16, 'old_town', 0],
+  [-10,  8,   5, 4,    15, 'old_town', 0],
+  [  1, 15,   5, 4,    17, 'old_town', 0],
+  [ -5, 14,   4, 3,    13, 'old_town', 0],
+  [ 10, 15,   4, 3,    15, 'old_town', 0],
 
-  // Bauhaus-Universität (main building, Geschwister-Scholl-Str)
-  [  2, 41,   6.5, 3, 13, 'university', 0],
+  // W of Markt toward Nationaltheater
+  [ -9, -2,   5, 5,    20, 'old_town', 0],
+  [ -9,  5,   5, 5,    16, 'old_town', 0],
+  // [-20,-8] removed (overlapped Wittumspalais); shifted west:
+  [-26, -7,   5, 4,    13, 'old_town', 0],
+  [-25,  4,   5, 5,    15, 'old_town', 0],
+  [-33,-16,   5, 4,    11, 'old_town', 0],  // was [-28,-8], moved clear of Goethekaufhaus
+  [-18,  2,   5, 4,    13, 'old_town', 0],
 
-  // Hauptbahnhof (compressed slightly N) – long station building
-  [-24,-85,  14, 3.5, 10, 'station', 0],
+  // ── RESIDENTIAL FILL ──────────────────────────────────────────────────────
+  // NE: Herderkirche → Stadtschloss
+  [  8,-17,   6, 5,    13, 'old_town', 0],
+  [ 15,-17,   6, 5,    15, 'old_town', 0],
+  [  8,-26,   6, 5,    12, 'residential', 0],
+  [ 18,-26,   6, 5,    11, 'residential', 0],
+  [ 26,-20,   6, 5,    10, 'residential', 0],
+  [ 33,-26,   5, 4,     9, 'residential', 0],
+  [ 38,-18,   6, 5,     9, 'residential', 0],
+  [ 44,-10,   6, 5,     9, 'residential', 0],
 
-  // ── OLD TOWN AROUND MARKT ─────────────────────────────────────
-  // N of Markt (between Markt and Herderplatz)
-  [ -6, -8,   8, 5, 18, 'old_town', 0],
-  [  5, -8,   6, 5, 20, 'old_town', 0],
-  [ 12, -8,   7, 5, 16, 'old_town', 0],
-  [-14, -8,   5, 4, 22, 'old_town', 0],
+  // NW around Theaterplatz
+  [-44, -8,   6, 5,    11, 'old_town', 0],
+  [-44,  4,   6, 5,    13, 'old_town', 0],
+  [-35,-12,   7, 5,    10, 'residential', 0],
+  // [-28,-25] removed (overlapped Haus der Erholung); shifted:
+  [-30,-28,   6, 5,     9, 'residential', 0],
+  [-37,-22,   6, 5,     9, 'residential', 0],
 
-  // E of Markt (toward Platz der Demokratie / river direction)
-  [ 14,  2,   6, 7, 19, 'old_town', 0],
-  [ 22, -2,   7, 6, 17, 'old_town', 0],
-  [ 22,  6,   7, 6, 15, 'old_town', 0],
-  [ 28,  2,   5, 5, 14, 'old_town', 0],
+  // N between Theaterplatz and Bauhaus Museum
+  [-38,-35,   7, 5,     9, 'residential', 0],
+  [-25,-42,   6, 5,    10, 'residential', 0],
+  [-50,-45,   6, 5,     8, 'residential', 0],
+  [-15,-45,   7, 5,     9, 'residential', 0],
+  [-28,-50,   6, 5,     8, 'residential', 0],
+  [ -2,-38,   6, 5,     9, 'residential', 0],
+  [ 10,-40,   6, 5,     9, 'residential', 0],
+  [ 22,-42,   6, 5,     8, 'residential', 0],
 
-  // S of Markt (toward Frauenplan)
-  [ -1,  8,   8, 5, 19, 'old_town', 0],
-  [  7, 10,   6, 6, 17, 'old_town', 0],
-  [-10,  8,   6, 5, 16, 'old_town', 0],
-  [  1, 15,   7, 5, 18, 'old_town', 0],
+  // SE: Goethehaus neighbourhood
+  [  7, 17,   6, 5,    15, 'old_town', 0],
+  // [22,8] removed (overlapped old_town 22,6); moved south:
+  [ 22, 14,   6, 5,    11, 'residential', 0],
+  [ 22, 21,   6, 5,    10, 'residential', 0],
+  [ 28, 12,   5, 5,    10, 'residential', 0],
+  [ 32,  4,   6, 5,    11, 'residential', 0],
+  [ 40,  8,   6, 5,     9, 'residential', 0],
+  [ 36, 18,   6, 5,     9, 'residential', 0],
+  [ 44,  2,   6, 5,     9, 'residential', 0],
 
-  // W of Markt (toward Nationaltheater)
-  [ -9, -2,   7, 6, 21, 'old_town', 0],
-  [ -9,  5,   7, 6, 17, 'old_town', 0],
-  [-20, -8,  10, 7, 14, 'old_town', 0],
-  [-25,  4,   8, 6, 16, 'old_town', 0],
-  [-28, -8,   7, 5, 12, 'old_town', 0],
+  // S toward Bauhaus-Uni
+  [ -5, 28,   6, 5,    11, 'residential', 0],
+  [ 12, 28,   6, 5,    10, 'residential', 0],
+  [-15, 28,   5, 4,     9, 'residential', 0],
+  [ 12, 35,   5, 4,     9, 'residential', 0],
+  [-12, 35,   6, 5,     8, 'residential', 0],
+  [-22, 35,   6, 5,     8, 'residential', 0],
+  [-22, 48,   6, 5,     8, 'residential', 0],
+  [ 20, 45,   6, 5,     8, 'residential', 0],
+  [  5, 50,   6, 5,     8, 'residential', 0],
+  [ -8, 50,   6, 5,     8, 'residential', 0],
+  [ 28, 38,   5, 4,     8, 'residential', 0],
+  [ 36, 32,   5, 4,     9, 'residential', 0],
 
-  // ── NE: Herderkirche → Stadtschloss ────────────────────────────
-  [  8,-17,   9, 6, 14, 'old_town', 0],
-  [ 15,-17,   8, 7, 16, 'old_town', 0],
-  [  8,-26,  10, 8, 13, 'residential', 0],
-  [ 18,-26,   9, 7, 11, 'residential', 0],
+  // E park-edge residential
+  [ 32, -5,   6, 5,    11, 'residential', 0],
+  // [32,8] removed (overlapped old_town 30,8); moved east:
+  [ 36,  8,   6, 5,    10, 'residential', 0],
+  [ 44, -5,   6, 5,     9, 'residential', 0],
+  [ 44,  8,   6, 5,     9, 'residential', 0],
+  [ 32,-18,   6, 5,    10, 'residential', 0],
+  [ 44,-18,   6, 5,     8, 'residential', 0],
+  [ 50,-10,   6, 5,     8, 'residential', 0],
+  [ 50,  4,   6, 5,     8, 'residential', 0],
 
-  // ── NW: around Theaterplatz ─────────────────────────────────────
-  [-44, -8,   8, 6, 12, 'old_town', 0],
-  [-44,  4,   8, 6, 14, 'old_town', 0],
-  [-35,-12,  12, 7, 11, 'residential', 0],
-  [-28,-25,  10, 8, 10, 'residential', 0],
-  [-46,-22,   9, 7,  9, 'residential', 0],
-
-  // N: between Theaterplatz and Bauhaus Museum
-  [-38,-35,  12, 8, 10, 'residential', 0],
-  [-25,-42,  10, 8, 11, 'residential', 0],
-  [-50,-45,   9, 7,  9, 'residential', 0],
-  [-15,-52,  11, 8, 10, 'residential', 0],
-
-  // ── SE: Anna Amalia + Goethehaus neighbourhood ──────────────────
-  [  0, 15,   7, 5, 18, 'old_town', 0],
-  [  7, 17,   8, 6, 16, 'old_town', 0],
-  [ 22,  8,   9, 7, 13, 'residential', 0],
-  [ 22, 17,   8, 6, 12, 'residential', 0],
-  [ 28, 12,   7, 6, 11, 'residential', 0],
-
-  // S: toward Bauhaus-Uni
-  [ -5, 28,  10, 7, 12, 'residential', 0],
-  [ 12, 28,   9, 8, 11, 'residential', 0],
-  [-15, 28,   8, 7, 10, 'residential', 0],
-  [ 12, 35,   8, 7, 10, 'residential', 0],
-  [-12, 35,   9, 7,  9, 'residential', 0],
-  [-22, 35,  10, 7,  9, 'residential', 0],
-  [-22, 48,   9, 7,  8, 'residential', 0],
-  [ 20, 45,  10, 8,  9, 'residential', 0],
-
-  // ── E: park-edge residential ────────────────────────────────────
-  [ 32, -5,  10, 8, 12, 'residential', 0],
-  [ 32,  8,  10, 8, 11, 'residential', 0],
-  [ 44, -5,  10, 8, 10, 'residential', 0],
-  [ 44,  8,  10, 8, 10, 'residential', 0],
-  [ 32,-18,  10, 8, 11, 'residential', 0],
-  [ 44,-18,   9, 7,  9, 'residential', 0],
-
-  // ── N of Herderkirche ────────────────────────────────────────────
-  [-10,-30,  10, 7, 12, 'residential', 0],
-  [  5,-35,  10, 8, 11, 'residential', 0],
-  [ 20,-35,  10, 8, 10, 'residential', 0],
-  [ -2,-42,   9, 7, 10, 'residential', 0],
-  [ 12,-45,   8, 7,  9, 'residential', 0],
-
-  // ── Goethe Gartenhaus (in park) ──────────────────────────────────
-  [ 48,-40,  10, 8,  9, 'residential', 0.3],
-  // Römisches Haus
-  [ 42,-30,  14,10, 10, 'residential', 0.2],
+  // Far N
+  // [-10,-30] removed (overlapped Sparkasse at -13,-28); shifted:
+  [ -8,-33,   6, 5,    11, 'residential', 0],
+  [  5,-35,   6, 5,    10, 'residential', 0],
+  [ 20,-35,   6, 5,     9, 'residential', 0],
+  [ -2,-42,   6, 5,     9, 'residential', 0],
+  [ 12,-45,   5, 4,     8, 'residential', 0],
 ];
 
 // ── Parks ─────────────────────────────────────────────────────────────────────
@@ -312,6 +397,7 @@ export class WeimarWorld {
   // ── Buildings ─────────────────────────────────────────────────────────────
   _buildBuildings() {
     const S = WORLD_SPREAD;
+    this.buildingColliders = [];
     BUILDINGS.forEach(([cx, cz, w, d, baseH, type, rotY = 0]) => {
       const group = new THREE.Group();
       group.position.set(cx * S, 0, cz * S);
@@ -337,6 +423,14 @@ export class WeimarWorld {
 
       this.worldGroup.add(group);
       this.buildingMeshes.push({ group, mesh, mat, roofMeshes, activeRoof: null, baseH, w, d, type });
+
+      // ── AABB collider (world-space, XZ plane) ─────────────────────────
+      this.buildingColliders.push({
+        minX: cx * S - w / 2,
+        maxX: cx * S + w / 2,
+        minZ: cz * S - d / 2,
+        maxZ: cz * S + d / 2,
+      });
     });
   }
 
