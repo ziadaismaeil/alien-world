@@ -109,6 +109,7 @@ let fogNearTarget = 80, fogFarTarget = 280;
 
 const world  = new WeimarWorld(scene);
 const player = new Player(scene);
+player.setColliders(world.buildingColliders);
 createLabels(scene);
 
 // ── Camera Mode ───────────────────────────────────────────────────────────────
