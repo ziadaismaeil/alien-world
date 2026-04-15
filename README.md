@@ -33,8 +33,8 @@ Nonsense Project is a two-weeks long task designed to get familiar with applicat
 
 ## Theme & constraint
 
-**Theme (Urban Absurdity):** [Paste the theme exactly as drawn.]  
-**Constraint (Playful Limitation):** [Paste the constraint exactly as drawn.]
+**Theme (Urban Absurdity):** People experience the same city as multiple overlapping realities  
+**Constraint (Playful Limitation):** Every element of your project must be capable of being reinterpreted in multiple ways
 
 ---
 
@@ -42,7 +42,7 @@ Nonsense Project is a two-weeks long task designed to get familiar with applicat
 
 ### Concept
 
-Alien World takes the real streets and buildings of Weimar — GPS-derived from OpenStreetMap — and hands them over to seven alien visitors, each of whom rewrites the city according to their own biology, psychology, and home-planet logic. The same buildings that look like cooling basalt to Thrak (a volcanic rock humanoid and disgraced intergalactic cop) look like crystalline growth media to Zyrax, a free-floating crystal being. Every character changes the sky colour, fog, road texture, building palette, roof shapes, trees, and ambient particles. The constraint bites through the characters themselves: each one has a specific urban obsession or quirk — Morra chases meat smells and bolts from her owner's leash, Solen navigates the city in a wheelchair and feels every cobblestone, Niko is a child permanently trailed by a hovering parental ghost, and Thrak breaks down sobbing every time he walks past his own authoritarian graffiti. The city is always Weimar. The experience is never the same twice.
+Alien World is built on the premise that a city is not one place — it is as many places as there are beings moving through it. The app takes the fixed, GPS-accurate streets and buildings of Weimar and runs them through seven radically different perceptual filters, one for each alien character. The same Marktplatz is a volcanic hellscape to Thrak, a crystalline lattice to Zyrax, a meat-scented maze to Morra. Every single element in the scene — the sky, the fog, the road colour, the building palette, the roof shapes, the trees, the particle field, the movement speed — is designed to carry a different meaning depending on who is looking. This is the constraint made literal: nothing in the world has a fixed reading. The graffiti on a wall is authoritarian intimidation to one character and emotional wreckage to another. A cobblestone street is texture to most and an almost impassable barrier to Solen. The city does not change. The reality layered over it does, completely, every time you switch character.
 
 ### User Story
 
