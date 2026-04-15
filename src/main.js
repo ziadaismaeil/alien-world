@@ -112,6 +112,58 @@ const player = new Player(scene);
 player.setColliders(world.buildingColliders);
 createLabels(scene);
 
+// ── Thrak Cry HUD ─────────────────────────────────────────────────────────────
+
+const CRY_LINES = [
+  '😭 WAAAAAAAH!!',
+  '*SOB* WHO DID THIS TO MY CITY?!',
+  'I\'M N-NOT CRYING... *sniff* ...I AM!!',
+  '😭 THIS IS ILLEGAL AND ALSO SAD!!',
+  '*WAAAH* THE VANDALISM... THE HUMANITY!!',
+  'SOMEONE WILL PAY FOR THIS!! 😭 *SOB*',
+  '*sniff* B-BADGE #666 IS... *WAAAH*... ON THE CASE!!',
+  '😭 I GAVE THIS CITY EVERYTHING!!',
+];
+let _cryLineIdx = 0;
+
+const cryHud = document.createElement('div');
+cryHud.id = 'thrak-cry-hud';
+Object.assign(cryHud.style, {
+  position:    'fixed',
+  bottom:      '120px',
+  left:        '50%',
+  transform:   'translateX(-50%)',
+  background:  'rgba(0,0,0,0.78)',
+  border:      '2px solid #ff4400',
+  borderRadius:'12px',
+  padding:     '14px 28px',
+  color:       '#ffdd88',
+  fontFamily:  '\'Arial Black\', Impact, sans-serif',
+  fontSize:    '1.3rem',
+  fontWeight:  '900',
+  textAlign:   'center',
+  pointerEvents:'none',
+  zIndex:      '100',
+  display:     'none',
+  textShadow:  '0 0 12px #ff4400, 0 0 24px #ff6600',
+  whiteSpace:  'nowrap',
+  animation:   'thrak-cry-shake 0.12s infinite',
+});
+document.body.appendChild(cryHud);
+
+// Inject keyframe animation for the HUD shake
+const cryStyle = document.createElement('style');
+cryStyle.textContent = `
+  @keyframes thrak-cry-shake {
+    0%,100% { transform: translateX(-50%) translateX(0); }
+    25%      { transform: translateX(-50%) translateX(-4px); }
+    75%      { transform: translateX(-50%) translateX(4px); }
+  }
+`;
+document.head.appendChild(cryStyle);
+
+const GRAFFITI_TRIGGER_DIST = 14; // world units
+
 // ── Camera Mode ───────────────────────────────────────────────────────────────
 
 let thirdPerson = false;
@@ -443,6 +495,36 @@ function animate() {
     scene.fog.far  += (fogFarTarget  - scene.fog.far)  * spd;
     world.applyTheme(theme, false);
     world.updateParticles(time, theme);
+
+    // Pulse graffiti glow in Thrak's world
+    if (theme.showGraffiti) {
+      const pulse = 3.5 + Math.sin(time * 3.5) * 1.5;
+      (world.graffitiMeshes ?? []).forEach(m => { m.material.emissiveIntensity = pulse; });
+
+      // Proximity cry trigger — Thrak breaks down near his own graffiti
+      if (activeCharacter.id === 'thrak' && player.cryCooldown <= 0) {
+        const pp = player.getPosition();
+        const D2 = GRAFFITI_TRIGGER_DIST * GRAFFITI_TRIGGER_DIST;
+        for (const m of world.graffitiMeshes) {
+          const dx = pp.x - m.userData.worldX;
+          const dz = pp.z - m.userData.worldZ;
+          if (dx * dx + dz * dz < D2) {
+            player.setCrying(5);
+            cryHud.textContent = CRY_LINES[_cryLineIdx % CRY_LINES.length];
+            _cryLineIdx++;
+            cryHud.style.display = 'block';
+            break;
+          }
+        }
+      }
+    }
+
+    // Show/hide cry HUD
+    if (activeCharacter?.id === 'thrak' && player.isCrying) {
+      cryHud.style.display = 'block';
+    } else {
+      cryHud.style.display = 'none';
+    }
   }
 
   skyMesh.rotation.y = time * 0.005;

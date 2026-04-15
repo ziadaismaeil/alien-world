@@ -150,13 +150,13 @@ export const CHARACTERS = [
     name: 'THRAK',
     planet: 'Ignar Prime',
     symbol: '⚡',
-    personality: 'Volatile · Primal · Burning',
+    personality: 'Aggressive · Authoritarian · Trigger-Happy',
     backstory:
-      'Thrak emerged from the magma seas of a volcanic hellscape where geological ' +
-      'violence is the norm and "calm" means the eruption hasn\'t started yet. ' +
-      'Every building in Weimar looks like cooling basalt to them — barely solid, ' +
-      'moments from eruption. They find the city\'s placidness deeply suspicious, ' +
-      'as if the ground is merely waiting for the right moment. They\'re helping it along.',
+      'Thrak is a disgraced intergalactic police officer kicked off three precincts ' +
+      'for excessive force — and still thinks they were all too soft. ' +
+      'Every citizen in Weimar looks suspicious: jaywalking, breathing wrong, ' +
+      'existing without a permit. They patrol the streets with a permanent scowl and a ' +
+      'zero-tolerance policy for everything, including fun. Badge #666. Don\'t make eye contact.',
     color: '#ff4400',
     theme: {
       skyTop: 0x1a0200,
@@ -188,6 +188,7 @@ export const CHARACTERS = [
       particleSpeed: 0.02,
       particleSpread: 160,
       roofShape: 'jagged',
+      showGraffiti: true,
       treeColor: 0x441100,
       treeTrunkColor: 0x220800,
     },

@@ -325,6 +325,7 @@ export class WeimarWorld {
     this._buildParks();
     this._buildRiver();
     this._buildBuildings();
+    this._buildGraffiti();
     this._buildPlazas();
     this._buildPlaygrounds();
     this._buildStudentGroups();
@@ -558,6 +559,155 @@ export class WeimarWorld {
         break;
       }
     }
+  }
+
+  // ── Graffiti (Thrak) ─────────────────────────────────────────────────────
+  _buildGraffiti() {
+    this.graffitiMeshes = [];
+
+    const TAGS = [
+      'COMPLY',
+      'NO FUN ZONE',
+      'BADGE #666',
+      'UNDER\nSURVEILLANCE',
+      'MOVE ALONG',
+      'SUSPECT\nAREA',
+      'VIOLATORS\nPROCESSED',
+      'OBEY',
+      'DO NOT\nGATHER',
+      'CITATION\nISSUED',
+      'ZONE 4B\nRESTRICTED',
+      'THRAK\nWAS HERE',
+      'YOU ARE\nBEING WATCHED',
+      'NO\nFUN',
+      'STOP\nOR ELSE',
+      'FINED',
+      'PAPERS\nPLEASE',
+      'CURFEW\n22:00',
+      'REPORT\nSUSPECTS',
+      'GUILTY',
+      'DISPERSE\nNOW',
+      'LAW\nENFORCED',
+      'STEP\nBACK',
+      'RESTRICTED\nZONE',
+      '⚡ THRAK ⚡',
+      'NO\nSMILING',
+      'HANDS\nWHERE I\nCAN SEE',
+    ];
+
+    // Tag almost every building — pick indices across the full list
+    const total = this.buildingMeshes.length;
+    const targets = [];
+    for (let i = 0; i < total; i += 2) targets.push(i); // every other building
+
+    targets.forEach((bi, ti) => {
+      const b = this.buildingMeshes[bi];
+      if (!b) return;
+
+      // Place 1–2 tags per building
+      const tagCount = (ti % 3 === 0) ? 2 : 1;
+
+      for (let t = 0; t < tagCount; t++) {
+        const tag   = TAGS[(ti * 2 + t) % TAGS.length];
+        const lines = tag.split('\n');
+
+        // High-res canvas for crispness
+        const cw = 512, ch = 512;
+        const canvas  = document.createElement('canvas');
+        canvas.width  = cw;
+        canvas.height = ch;
+        const ctx = canvas.getContext('2d');
+
+        ctx.clearRect(0, 0, cw, ch);
+
+        // Slight spray-paint tilt
+        const angle = (Math.random() - 0.5) * 0.22;
+        ctx.save();
+        ctx.translate(cw / 2, ch / 2);
+        ctx.rotate(angle);
+
+        const fontSize = lines.length > 2 ? 110 : lines.length > 1 ? 130 : 160;
+        ctx.font        = `900 ${fontSize}px 'Arial Black', Impact, sans-serif`;
+        ctx.textAlign   = 'center';
+        ctx.textBaseline = 'middle';
+
+        // Outer glow pass — wide blurry yellow halo
+        ctx.shadowColor = '#ffff00';
+        ctx.shadowBlur  = 80;
+        ctx.fillStyle   = '#ffff00';
+        for (let g = 0; g < 4; g++) {
+          const lineH  = fontSize * 1.2;
+          const startY = -(lines.length - 1) * lineH / 2;
+          lines.forEach((l, li) => ctx.fillText(l, 0, startY + li * lineH));
+        }
+
+        // Bright core — pure white centre on top of yellow
+        ctx.shadowBlur  = 0;
+        ctx.fillStyle   = '#ffffff';
+        {
+          const lineH  = fontSize * 1.2;
+          const startY = -(lines.length - 1) * lineH / 2;
+          lines.forEach((l, li) => ctx.fillText(l, 0, startY + li * lineH));
+        }
+
+        // Yellow outline
+        ctx.strokeStyle = '#ffff00';
+        ctx.lineWidth   = 8;
+        {
+          const lineH  = fontSize * 1.2;
+          const startY = -(lines.length - 1) * lineH / 2;
+          lines.forEach((l, li) => ctx.strokeText(l, 0, startY + li * lineH));
+        }
+
+        ctx.restore();
+
+        // Separate emissive-only texture (same canvas, full opacity)
+        const tex = new THREE.CanvasTexture(canvas);
+        const mat = new THREE.MeshStandardMaterial({
+          map: tex,
+          transparent: true,
+          depthWrite: false,
+          roughness: 0.9,
+          metalness: 0,
+          emissive: new THREE.Color(0xffff00),
+          emissiveMap: tex,
+          emissiveIntensity: 4.0,
+        });
+
+        // Large decals — nearly full wall width
+        const pw = Math.max(b.w * 0.9, 5);
+        const ph = pw * (lines.length > 1 ? 0.9 : 0.6);
+        const geo = new THREE.PlaneGeometry(pw, ph);
+
+        const decal = new THREE.Mesh(geo, mat);
+        decal.visible = false;
+
+        // Spread tags across all 4 faces
+        const face   = (ti * 2 + t) % 4;
+        const halfW  = b.w / 2 + 0.06;
+        const halfD  = b.d / 2 + 0.06;
+        // Alternate height so double-tags don't overlap
+        const midH   = b.baseH * (t === 0 ? 0.45 : 0.72);
+
+        if (face === 0) {
+          decal.position.set(0, midH, halfD);
+        } else if (face === 1) {
+          decal.position.set(0, midH, -halfD);
+          decal.rotation.y = Math.PI;
+        } else if (face === 2) {
+          decal.position.set(halfW, midH, 0);
+          decal.rotation.y = Math.PI / 2;
+        } else {
+          decal.position.set(-halfW, midH, 0);
+          decal.rotation.y = -Math.PI / 2;
+        }
+
+        decal.userData.worldX = b.group.position.x;
+        decal.userData.worldZ = b.group.position.z;
+        b.group.add(decal);
+        this.graffitiMeshes.push(decal);
+      }
+    });
   }
 
   // ── Roof varieties (per character theme) ─────────────────────────────────
@@ -2396,6 +2546,10 @@ export class WeimarWorld {
       tr.crownMat.color.lerp(new THREE.Color(theme.treeColor), t);
       tr.trunkMat.color.lerp(new THREE.Color(theme.treeTrunkColor), t);
     });
+
+    // Graffiti (Thrak only)
+    const showGraffiti = theme.showGraffiti || false;
+    (this.graffitiMeshes ?? []).forEach(m => { m.visible = showGraffiti; });
 
     // Particles
     if (this.particles) {

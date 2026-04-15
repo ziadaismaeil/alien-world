@@ -1,7 +1,7 @@
 {
-  "name": "weimar-multiverse",
+  "name": "alien-world",
   "version": "1.0.0",
-  "description": "Weimar through alien eyes — a 3D multiverse explorer",
+  "description": "Alien World — a 3D explorer",
   "type": "module",
   "scripts": {
     "dev": "vite",

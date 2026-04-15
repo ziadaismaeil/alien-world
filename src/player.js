@@ -41,6 +41,8 @@ export class Player {
     this._lockTimer      = 0;
     this._attractTarget  = null; // Vector3 — set for attract-move, null for freeze
     this._colliders      = [];   // AABB building colliders from WeimarWorld
+    this._cryTimer       = 0;    // >0 while Thrak is crying
+    this._cryCooldown    = 0;    // cooldown so the same graffiti doesn't re-trigger immediately
   }
 
   lockFor(seconds) {
@@ -57,6 +59,15 @@ export class Player {
   }
 
   setColliders(colliders) { this._colliders = colliders; }
+
+  setCrying(duration) {
+    if (this._cryCooldown > 0) return; // already cooling down
+    this._cryTimer    = duration;
+    this._cryCooldown = duration + 8;  // 8-second gap before next cry
+  }
+
+  get isCrying()       { return this._cryTimer > 0; }
+  get cryCooldown()    { return this._cryCooldown; }
 
   get isLocked()    { return this._locked; }
   getLockTimer()    { return this._lockTimer; }
@@ -82,6 +93,9 @@ export class Player {
   }
 
   update(delta, time, speedMult = 1.0) {
+    if (this._cryTimer    > 0) this._cryTimer    -= delta;
+    if (this._cryCooldown > 0) this._cryCooldown -= delta;
+
     if (this._locked) {
       this._lockTimer -= delta;
       if (this._lockTimer <= 0) {
@@ -118,13 +132,13 @@ export class Player {
         }
         this.group.position.y = 0;
         if (this.isMoving) this.walkTime += delta * 8;
-        this.model?.userData?.animate?.(this.walkTime, this.isMoving, time);
+        this.model?.userData?.animate?.(this.walkTime, this.isMoving, time, 1.0, this._cryTimer > 0);
         return;
       }
 
       // ── Freeze lock (VEX chat, etc.) ─────────────────────────────────
       this.isMoving = false;
-      this.model?.userData?.animate?.(this.walkTime, false, time);
+      this.model?.userData?.animate?.(this.walkTime, false, time, 1.0, this._cryTimer > 0);
       return;
     }
 
@@ -148,7 +162,7 @@ export class Player {
     this.group.position.y = 0;
 
     if (this.isMoving) this.walkTime += delta * 5;
-    this.model?.userData?.animate?.(this.walkTime, this.isMoving, time, speedMult);
+    this.model?.userData?.animate?.(this.walkTime, this.isMoving, time, speedMult, this._cryTimer > 0);
   }
 
   getPosition()  { return this.group.position; }
@@ -476,35 +490,79 @@ function buildThrak() {
   const legL = makeLeg(-1);
   const legR = makeLeg(1);
 
-  g.userData.animate = (wt, moving, t) => {
+  // ── Tear drops (visible only when crying) ──────────────────────────────
+  const tears = [-0.25, 0.25].map(x => {
+    const mat = new THREE.MeshStandardMaterial({
+      color: 0x88ddff, emissive: new THREE.Color(0x44aaff),
+      emissiveIntensity: 4.0, metalness: 0, roughness: 0.1,
+      transparent: true, opacity: 0.92,
+      side: THREE.DoubleSide,
+    });
+    const tear = new THREE.Mesh(new THREE.SphereGeometry(0.45, 8, 6), mat);
+    tear.scale.set(1, 2.2, 1); // tall teardrop
+    tear.position.set(x, 3.3, 0.5);
+    tear.visible = false;
+    g.add(tear);
+    return tear;
+  });
+
+  g.userData.animate = (wt, moving, t, speedMult = 1.0, crying = false) => {
     // Heavy stomp bob
     const bob = Math.abs(Math.sin(wt)) * 0.18;
-    [torso, head, armL, armR, ...cracks, ...eyes].forEach(o => {
-      if (o === armL) { armL.position.y = 3.05 + bob; return; }
-      if (o === armR) { armR.position.y = 3.05 + bob; return; }
-    });
     torso.position.y = 2.3 + bob;
     head.position.y  = 3.45 + bob;
     cracks.forEach(c => { c.position.y = 2.3 + bob; });
-    eyes.forEach((e, i) => { e.position.y = 3.5 + bob; });
+    eyes.forEach(e  => { e.position.y  = 3.5  + bob; });
     armL.position.y = 3.05 + bob;
     armR.position.y = 3.05 + bob;
 
-    // Arm swing
-    armL.rotation.x = Math.sin(wt + Math.PI) * 0.45;
-    armR.rotation.x = Math.sin(wt) * 0.45;
-
-    // Leg step
-    legL.rotation.x = Math.sin(wt) * 0.5;
-    legR.rotation.x = Math.sin(wt + Math.PI) * 0.5;
-
-    // Lava pulsing
-    cracks.forEach((c, i) => {
-      c.material.emissiveIntensity = 2.5 + Math.sin(t * 4 + i) * 1.5;
-    });
-    eyes.forEach((e, i) => {
-      e.material.emissiveIntensity = 3.0 + Math.sin(t * 5 + i * 2) * 1.5;
-    });
+    if (crying) {
+      // Head shake side-to-side frantically
+      head.rotation.z = Math.sin(t * 14) * 0.28;
+      head.rotation.x = Math.sin(t * 9)  * 0.12;
+      // Arms raised to face — covering eyes / wailing
+      armL.rotation.x = -2.2 + Math.sin(t * 8) * 0.3;
+      armR.rotation.x = -2.2 + Math.sin(t * 8 + 1) * 0.3;
+      // Full body tremble
+      g.position.x = Math.sin(t * 22) * 0.06;
+      g.position.z = Math.cos(t * 19) * 0.04;
+      // Legs still walk but jelly-like
+      legL.rotation.x = Math.sin(wt) * 0.5 + Math.sin(t * 18) * 0.08;
+      legR.rotation.x = Math.sin(wt + Math.PI) * 0.5 + Math.sin(t * 18) * 0.08;
+      // Tears drip down (loop every ~1.4s per tear, offset between the two)
+      tears.forEach((tear, i) => {
+        tear.visible = true;
+        const phase = ((t * 1.2 + i * 0.7) % 1.4);
+        tear.position.y = 3.35 + bob - phase * 2.8;
+        tear.material.opacity = Math.max(0, 0.95 - phase * 0.55);
+      });
+      // Lava cracks flicker wildly — emotions too big to contain
+      cracks.forEach((c, i) => {
+        c.material.emissiveIntensity = 3.5 + Math.sin(t * 20 + i) * 2.5;
+      });
+      eyes.forEach((e, i) => {
+        e.material.emissiveIntensity = 5.0 + Math.sin(t * 18 + i) * 2.5;
+      });
+    } else {
+      // Normal: arm swing + leg step
+      armL.rotation.x = Math.sin(wt + Math.PI) * 0.45;
+      armR.rotation.x = Math.sin(wt) * 0.45;
+      legL.rotation.x = Math.sin(wt) * 0.5;
+      legR.rotation.x = Math.sin(wt + Math.PI) * 0.5;
+      // Reset cry overrides
+      head.rotation.z  = 0;
+      head.rotation.x  = 0;
+      g.position.x     = 0;
+      g.position.z     = 0;
+      tears.forEach(tear => { tear.visible = false; });
+      // Normal lava pulsing
+      cracks.forEach((c, i) => {
+        c.material.emissiveIntensity = 2.5 + Math.sin(t * 4 + i) * 1.5;
+      });
+      eyes.forEach((e, i) => {
+        e.material.emissiveIntensity = 3.0 + Math.sin(t * 5 + i * 2) * 1.5;
+      });
+    }
   };
   return g;
 }
