@@ -196,7 +196,7 @@ function buildFallback(color) {
 // ── MODEL_BUILDERS registry ───────────────────────────────────────────────────
 const MODEL_BUILDERS = { zyrax: buildZyrax, morra: buildMorra, thrak: buildThrak,
                          lumi: buildLumi,   vex: buildVex,     solen: buildSolen,
-                         niko: buildNiko };
+                         niko: buildNiko,   crash01: buildCrash01, crash02: buildCrash02 };
 
 // ── ZYRAX — Floating crystal being ───────────────────────────────────────────
 function buildZyrax() {
@@ -1100,6 +1100,307 @@ function buildNiko() {
     const sa2 = t * 1.1 + Math.PI;
     star2.position.set(Math.cos(sa2) * 1.75, 2.6 + Math.sin(sa2 * 0.8) * 0.4, Math.sin(sa2) * 1.75);
     star2.rotation.y = -t * 3;
+  };
+
+  return g;
+}
+
+// ── CRASH-01 — THRAZYR (Thrak × Zyrax) ───────────────────────────────────────
+function buildCrash01() {
+  const g = new THREE.Group();
+
+  const rock    = (e = 0.8) => stdMat(0x221100, 0x882200, e, 0.6, 1.0);
+  const crystal = ()        => stdMat(0x5588ee, 0x2233aa, 1.6, 0.95, 0.05, true, 0.85);
+  const lava    = ()        => stdMat(0xff4400, 0xff2200, 3.5, 0.8, 0.2);
+
+  // Rocky torso (left-dominant)
+  const torso = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.6, 1.0), rock());
+  torso.position.y = 2.3;
+  g.add(torso);
+
+  // Crystal shard cluster on right shoulder — Zyrax bleeding through
+  const shards = [];
+  [[0.6, 2.8, 0.3], [0.8, 3.1, -0.2], [0.5, 3.3, 0.1]].forEach(([x, y, z], i) => {
+    const shard = new THREE.Mesh(new THREE.OctahedronGeometry(0.28 - i * 0.04, 0), crystal());
+    shard.scale.set(0.6, 2.0 + i * 0.5, 0.5);
+    shard.position.set(x, y, z);
+    g.add(shard);
+    shards.push(shard);
+  });
+
+  // Lava cracks
+  const cracks = [
+    { w: 0.08, h: 1.2, x: -0.15, y: 2.3, z: 0.51 },
+    { w: 0.06, h: 0.7, x:  0.25, y: 2.3, z: 0.51 },
+  ].map(({ w, h, x, y, z }) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), lava());
+    m.position.set(x, y, z);
+    g.add(m);
+    return m;
+  });
+
+  // Head (rocky base)
+  const head = new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.0, 0.95), rock(0.6));
+  head.position.y = 3.45;
+  g.add(head);
+
+  // Crystal crown spike on top
+  const crown = new THREE.Mesh(new THREE.ConeGeometry(0.18, 1.0, 4), crystal());
+  crown.position.set(0.2, 4.3, 0);
+  g.add(crown);
+
+  // Left eye: fiery (Thrak)
+  const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.17, 6, 4), new THREE.MeshBasicMaterial({ color: 0xff4400 }));
+  const glowL = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 4), stdMat(0xff8800, 0xff4400, 4.0, 0, 0));
+  eyeL.position.set(-0.25, 3.5, 0.49);
+  glowL.position.set(-0.25, 3.5, 0.55);
+  g.add(eyeL, glowL);
+
+  // Right eye: crystal (Zyrax)
+  const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.17, 6, 4), new THREE.MeshBasicMaterial({ color: 0x88aaff }));
+  const glowR = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 4), stdMat(0xaaccff, 0x2244cc, 4.0, 0.95, 0.05));
+  eyeR.position.set(0.25, 3.5, 0.49);
+  glowR.position.set(0.25, 3.5, 0.55);
+  g.add(eyeR, glowR);
+
+  // Arms: left = rock, right = crystal
+  function makeArm(side, mat) {
+    const pivot = new THREE.Group();
+    pivot.position.set(side * 0.95, 3.05, 0);
+    const geo = new THREE.BoxGeometry(0.48, 1.4, 0.48);
+    geo.translate(0, -0.7, 0);
+    pivot.add(new THREE.Mesh(geo, mat));
+    g.add(pivot);
+    return pivot;
+  }
+  const armL = makeArm(-1, rock(0.7));
+  const armR = makeArm( 1, crystal());
+
+  // Legs: left = rock, right = crystal
+  function makeLeg(side) {
+    const pivot = new THREE.Group();
+    pivot.position.set(side * 0.42, 1.5, 0);
+    const geo = new THREE.BoxGeometry(0.55, 1.6, 0.55);
+    geo.translate(0, -0.8, 0);
+    pivot.add(new THREE.Mesh(geo, side < 0 ? rock(0.8) : crystal()));
+    g.add(pivot);
+    return pivot;
+  }
+  const legL = makeLeg(-1);
+  const legR = makeLeg( 1);
+
+  // Glitch ghost — wireframe offset duplicate that flickers
+  const ghost = new THREE.Mesh(
+    new THREE.BoxGeometry(1.5, 3.5, 1.0),
+    new THREE.MeshBasicMaterial({ color: 0xff00ff, transparent: true, opacity: 0, wireframe: true })
+  );
+  ghost.position.y = 2.5;
+  g.add(ghost);
+
+  g.userData.animate = (wt, moving, t) => {
+    const bob = Math.abs(Math.sin(wt)) * 0.18;
+    torso.position.y = 2.3 + bob;
+    head.position.y  = 3.45 + bob;
+    crown.position.y = 4.3 + bob;
+    cracks.forEach(c => { c.position.y = 2.3 + bob; });
+    [eyeL, glowL, eyeR, glowR].forEach(e => { e.position.y = (e === eyeL || e === glowL ? (e === glowL ? 3.5 : 3.5) : 3.5) + bob; });
+    eyeL.position.y = glowL.position.y = eyeR.position.y = glowR.position.y = 3.5 + bob;
+    shards.forEach((s, i) => { s.position.y = [2.8, 3.1, 3.3][i] + bob; });
+    armL.position.y = armR.position.y = 3.05 + bob;
+    ghost.position.y = 2.5 + bob;
+
+    // Walk
+    armL.rotation.x = Math.sin(wt + Math.PI) * 0.45;
+    armR.rotation.x = Math.sin(wt) * 0.45;
+    legL.rotation.x = Math.sin(wt) * 0.5;
+    legR.rotation.x = Math.sin(wt + Math.PI) * 0.5;
+
+    // Crystal shards spin
+    shards.forEach((s, i) => { s.rotation.y = t * (1.5 + i * 0.4); s.rotation.x = t * 0.5; });
+    crown.rotation.y = t * 2.5;
+
+    // Lava + crystal pulse
+    cracks.forEach((c, i) => { c.material.emissiveIntensity = 2.5 + Math.sin(t * 4 + i) * 1.5; });
+    glowL.material.emissiveIntensity = 3.5 + Math.sin(t * 5) * 1.5;
+    glowR.material.emissiveIntensity = 3.5 + Math.sin(t * 5 + 1) * 1.5;
+    shards.forEach(s => { s.material.emissiveIntensity = 1.4 + Math.sin(t * 3) * 0.8; });
+
+    // Glitch ghost flicker
+    if (Math.sin(t * 7.3) > 0.88) {
+      ghost.material.opacity = 0.25 + Math.random() * 0.2;
+      ghost.position.x = (Math.random() - 0.5) * 0.6;
+    } else {
+      ghost.material.opacity *= 0.85;
+      ghost.position.x *= 0.8;
+    }
+  };
+
+  return g;
+}
+
+// ── CRASH-02 — LUMORRA (Morra × Lumi × Niko) ─────────────────────────────────
+function buildCrash02() {
+  const g = new THREE.Group();
+
+  const teal  = 0x00ddaa;
+  const tealE = 0x00cc77;
+  const pink  = 0xff77cc;
+  const pinkE = 0xcc2288;
+
+  // Morra dog body — horizontal capsule
+  const body = new THREE.Mesh(
+    new THREE.CapsuleGeometry(0.65, 1.4, 8, 10),
+    stdMat(teal, tealE, 0.9, 0.05, 0.65, true, 0.9)
+  );
+  body.rotation.z = Math.PI / 2;
+  body.position.set(0, 1.0, 0);
+  g.add(body);
+
+  // Neck
+  const neck = new THREE.Mesh(
+    new THREE.CapsuleGeometry(0.28, 0.45, 6, 8),
+    stdMat(teal, tealE, 0.7, 0.05, 0.7, true, 0.88)
+  );
+  neck.position.set(0, 1.3, 0.9);
+  neck.rotation.x = -0.5;
+  g.add(neck);
+
+  // Head: big like Niko, pink-teal mix
+  const head = new THREE.Mesh(
+    new THREE.SphereGeometry(0.95, 10, 8),
+    stdMat(0xcceecc, pinkE, 0.5, 0.05, 0.65, true, 0.9)
+  );
+  head.position.set(0, 1.65, 1.7);
+  g.add(head);
+
+  // Oversized eyes (Niko-like, one each colour)
+  const eyeObjs = [];
+  [-0.32, 0.32].forEach((x, si) => {
+    const sclera = new THREE.Mesh(new THREE.SphereGeometry(0.34, 8, 6),
+      new THREE.MeshBasicMaterial({ color: 0xffffff }));
+    sclera.position.set(x, 1.78, 2.4);
+
+    const irisCol = si === 0 ? teal : pink;
+    const irisE   = si === 0 ? tealE : pinkE;
+    const iris = new THREE.Mesh(new THREE.SphereGeometry(0.21, 7, 5),
+      stdMat(irisCol, irisE, 2.5, 0, 0));
+    iris.position.set(x, 1.78, 2.55);
+
+    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 4),
+      new THREE.MeshBasicMaterial({ color: 0x111111 }));
+    pupil.position.set(x, 1.78, 2.65);
+
+    g.add(sclera, iris, pupil);
+    eyeObjs.push(iris);
+  });
+
+  // Snout + nose (Morra)
+  const snout = new THREE.Mesh(
+    new THREE.CapsuleGeometry(0.22, 0.4, 6, 8),
+    stdMat(teal, tealE, 0.8, 0.05, 0.6, true, 0.9)
+  );
+  snout.rotation.x = Math.PI / 2;
+  snout.position.set(0, 1.5, 2.45);
+  g.add(snout);
+
+  const nose = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 6),
+    stdMat(teal, teal, 2.5, 0, 0.4));
+  nose.position.set(0, 1.5, 2.72);
+  g.add(nose);
+
+  // 4 Legs
+  function makeLeg(x, zOff) {
+    const pivot = new THREE.Group();
+    pivot.position.set(x, 0.85, zOff);
+    const leg = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.11, 0.45, 5, 6),
+      stdMat(teal, tealE, 0.7, 0.05, 0.7, true, 0.88)
+    );
+    leg.position.y = -0.45;
+    pivot.add(leg);
+    g.add(pivot);
+    return pivot;
+  }
+  const legFL = makeLeg(-0.48,  0.65);
+  const legFR = makeLeg( 0.48,  0.65);
+  const legBL = makeLeg(-0.48, -0.65);
+  const legBR = makeLeg( 0.48, -0.65);
+
+  // Lumi orbital rings around the whole creature
+  const rings = [];
+  const ringDefs = [
+    { r: 2.2, rot: [0, 0, 0],              col: 0xaaaaff },
+    { r: 1.9, rot: [Math.PI/2, 0, 0],      col: teal     },
+    { r: 2.0, rot: [0, 0, Math.PI/2],      col: pink     },
+  ];
+  ringDefs.forEach(({ r, rot, col }) => {
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(r, 0.055, 6, 32),
+      new THREE.MeshStandardMaterial({
+        color: col, emissive: new THREE.Color(col), emissiveIntensity: 2.0,
+        transparent: true, opacity: 0.72,
+      })
+    );
+    ring.position.y = 1.8;
+    ring.rotation.set(...rot);
+    g.add(ring);
+    rings.push(ring);
+  });
+
+  // Niko star sparkle
+  const star = new THREE.Mesh(new THREE.OctahedronGeometry(0.28, 0),
+    stdMat(0xffdd00, 0xffdd00, 4.5, 0, 0.2));
+  g.add(star);
+
+  // Glitch ghost
+  const ghost = new THREE.Mesh(
+    new THREE.SphereGeometry(0.95, 8, 6),
+    new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, wireframe: true })
+  );
+  ghost.position.set(0, 1.65, 1.7);
+  g.add(ghost);
+
+  g.userData.animate = (wt, moving, t) => {
+    // Dog walk
+    const walk = moving ? Math.sin(wt * 6) * 0.4 : 0;
+    legFL.rotation.x =  walk; legBR.rotation.x =  walk;
+    legFR.rotation.x = -walk; legBL.rotation.x = -walk;
+    if (moving) body.position.y = 1.0 + Math.abs(Math.sin(wt * 6)) * 0.1;
+
+    // Nose sniff
+    nose.position.y = 1.5 + Math.sin(t * 4.5) * 0.04;
+
+    // Lumi rings spin (different axes, different speeds)
+    rings[0].rotation.y += 0.016 * (moving ? 2.5 : 1.0);
+    rings[1].rotation.y += 0.012 * (moving ? 2.5 : 1.0);
+    rings[1].rotation.z += 0.020 * (moving ? 2.5 : 1.0);
+    rings[2].rotation.x += 0.014 * (moving ? 2.5 : 1.0);
+
+    // Niko star orbit
+    const sa = t * 1.8;
+    star.position.set(
+      Math.cos(sa) * 2.6,
+      1.6 + Math.sin(sa * 0.7) * 0.7,
+      Math.sin(sa) * 2.6
+    );
+    star.rotation.y = t * 4;
+
+    // Eye pulse
+    eyeObjs.forEach((iris, i) => {
+      iris.material.emissiveIntensity = 2.2 + Math.sin(t * 3 + i * 1.5) * 1.0;
+    });
+
+    // Glitch head ghost
+    if (Math.sin(t * 6.7) > 0.88) {
+      ghost.material.opacity = 0.22 + Math.random() * 0.15;
+      ghost.position.set(
+        (Math.random() - 0.5) * 0.45,
+        1.65 + (Math.random() - 0.5) * 0.3,
+        1.7  + (Math.random() - 0.5) * 0.3
+      );
+    } else {
+      ghost.material.opacity *= 0.8;
+    }
   };
 
   return g;

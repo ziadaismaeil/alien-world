@@ -112,6 +112,63 @@ const player = new Player(scene);
 player.setColliders(world.buildingColliders);
 createLabels(scene);
 
+// ── Glitch Effects (crash universes) ─────────────────────────────────────────
+
+const glitchOverlay = document.createElement('div');
+Object.assign(glitchOverlay.style, {
+  position: 'fixed', inset: '0', pointerEvents: 'none',
+  zIndex: '49', display: 'none', mixBlendMode: 'screen',
+});
+document.body.appendChild(glitchOverlay);
+
+let _glitchActive  = false;
+let _glitchEndTime = 0;
+
+function tickGlitch(theme, time) {
+  if (!theme.glitch) {
+    if (_glitchActive) {
+      _glitchActive = false;
+      canvas.style.filter    = '';
+      canvas.style.transform = '';
+      glitchOverlay.style.display = 'none';
+    }
+    return;
+  }
+
+  if (_glitchActive && time > _glitchEndTime) {
+    _glitchActive = false;
+    canvas.style.filter    = 'saturate(1.35) contrast(1.08)';
+    canvas.style.transform = '';
+    glitchOverlay.style.display = 'none';
+  }
+
+  if (!_glitchActive && Math.random() < 0.025) {
+    _glitchActive  = true;
+    _glitchEndTime = time + 0.055 + Math.random() * 0.09;
+
+    const hue = Math.floor(Math.random() * 360);
+    const sat = 3 + Math.random() * 2;
+    const jx  = (Math.random() - 0.5) * 14;
+    const jy  = (Math.random() - 0.5) * 6;
+    canvas.style.filter    = `hue-rotate(${hue}deg) saturate(${sat}) brightness(1.4)`;
+    canvas.style.transform = `translate(${jx}px, ${jy}px)`;
+
+    // Colour bar overlay
+    const barTop = Math.random() * 70;
+    const barH   = 4 + Math.random() * 18;
+    const r = Math.floor(Math.random() * 255);
+    const b = Math.floor(Math.random() * 255);
+    glitchOverlay.style.display    = 'block';
+    glitchOverlay.style.background =
+      `linear-gradient(transparent ${barTop}%, rgba(${r},0,${b},0.4) ${barTop}%,` +
+      `rgba(${r},0,${b},0.4) ${barTop + barH}%, transparent ${barTop + barH}%)`;
+  }
+
+  if (!_glitchActive) {
+    canvas.style.filter = 'saturate(1.35) contrast(1.08)';
+  }
+}
+
 // ── Thrak Cry HUD ─────────────────────────────────────────────────────────────
 
 const CRY_LINES = [
@@ -243,12 +300,12 @@ function selectCharacter(id) {
   const char = charMap[id];
   if (!char || activeCharacter?.id === id) return;
 
-  const wasNiko  = activeCharacter?.id === 'niko';
-  const isNiko   = id === 'niko';
+  const wasNiko  = activeCharacter?.id === 'niko'  || activeCharacter?.id === 'crash02';
+  const isNiko   = id === 'niko'  || id === 'crash02';
   const wasVex   = activeCharacter?.id === 'vex';
   const isVex    = id === 'vex';
-  const wasMorra = activeCharacter?.id === 'morra';
-  const isMorra  = id === 'morra';
+  const wasMorra = activeCharacter?.id === 'morra' || activeCharacter?.id === 'crash02';
+  const isMorra  = id === 'morra' || id === 'crash02';
   const wasSolen = activeCharacter?.id === 'solen';
   const isSolen  = id === 'solen';
 
@@ -366,9 +423,9 @@ function animate() {
   // Parent watcher follows Niko
   if (parentWatcher) parentWatcher.update(player.getPosition(), delta);
 
-  // Playground proximity glow (only meaningful when Niko, but updates fade-out too)
+  // Playground proximity glow (Niko + LUMORRA crash)
   if (activeCharacter) {
-    const isNiko = activeCharacter.id === 'niko';
+    const isNiko = activeCharacter.id === 'niko' || activeCharacter.id === 'crash02';
     world.updatePlaygroundProximity(
       player.getPosition().x,
       player.getPosition().z,
@@ -422,8 +479,8 @@ function animate() {
     if (!isVex && _pendingDoor) { _pendingDoor = null; _updateBuildingHud(null, false); }
   }
 
-  // ── Morra dog mechanics ───────────────────────────────────────────────────
-  const isMorra = activeCharacter?.id === 'morra';
+  // ── Morra dog mechanics (+ LUMORRA crash) ────────────────────────────────
+  const isMorra = activeCharacter?.id === 'morra' || activeCharacter?.id === 'crash02';
   if (isMorra) {
     const px = player.getPosition().x;
     const pz = player.getPosition().z;
@@ -495,6 +552,7 @@ function animate() {
     scene.fog.far  += (fogFarTarget  - scene.fog.far)  * spd;
     world.applyTheme(theme, false);
     world.updateParticles(time, theme);
+    tickGlitch(theme, time);
 
     // Pulse graffiti glow in Thrak's world
     if (theme.showGraffiti) {

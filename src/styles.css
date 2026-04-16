@@ -354,6 +354,21 @@ canvas#canvas {
   55% { transform: translateY(-4px) scale(1.03); }
   80% { transform: translateY(-1px) scale(1.01); }
 }
+@keyframes glitch-split {
+  0%,100% { transform: translate(0,0) skewX(0deg); filter: none; }
+  10%      { transform: translate(-3px, 1px) skewX(-4deg); filter: hue-rotate(90deg); }
+  20%      { transform: translate(3px,-1px) skewX(2deg);  filter: hue-rotate(200deg); }
+  30%      { transform: translate(0,0) skewX(0deg); filter: none; }
+  70%      { transform: translate(-2px,2px) skewX(3deg);  filter: hue-rotate(300deg) saturate(3); }
+  80%      { transform: translate(2px,0) skewX(-2deg); filter: none; }
+}
+@keyframes lumorra-chaos {
+  0%,100% { transform: translateY(0) rotate(0deg) scale(1); }
+  15%     { transform: translateY(-5px) rotate(-4deg) scale(1.04); }
+  35%     { transform: translateY(-8px) rotate(3deg) scale(0.97); }
+  55%     { transform: translateY(-3px) rotate(-2deg) scale(1.06); }
+  75%     { transform: translateY(-6px) rotate(4deg) scale(1.02); }
+}
 
 /* ── World Labels (CSS2DRenderer) ─────────────────────────────────────────── */
 .world-label {

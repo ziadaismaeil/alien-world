@@ -545,6 +545,171 @@ export const CHARACTERS = [
         <circle cx="32" cy="46" r="11" fill="none" stroke="#ff8800" stroke-width="0.5" opacity="0.3"/>
       </g>`,
   },
+  // ── CRASH UNIVERSE 01: THRAK × ZYRAX ─────────────────────────────────────
+  {
+    id: 'crash01',
+    name: 'THRAZYR',
+    planet: 'Collision Point Ω-7',
+    symbol: '⚡◆',
+    personality: 'Authoritarian · Crystalline · Unstable',
+    backstory:
+      'Nobody planned for Thrak and Zyrax to occupy the same reality simultaneously. ' +
+      'The collision compressed a volcanic police state and a cold mathematical lattice ' +
+      'into a single shuddering world. Now the buildings are half-basalt, half-diamond. ' +
+      'The sky can\'t decide between fire and void. And somewhere in the rubble, two very ' +
+      'confused beings are trying to enforce laws that contradict each other at the speed of light.',
+    color: '#cc44ff',
+    theme: {
+      skyTop: 0x0c001a,
+      skyBot: 0x2d0a18,
+      fogColor: 0x1a0828,
+      fogNear: 55,
+      fogFar: 240,
+      groundColor: 0x0d0018,
+      groundEmissive: 0x330033,
+      ambientColor: 0xcc55ff,
+      ambientIntensity: 2.2,
+      sunColor: 0xff88cc,
+      sunIntensity: 3.5,
+      fillColor: 0x4400cc,
+      fillIntensity: 1.6,
+      buildingPalette: [0x441100, 0x4466cc, 0x552200, 0x6699ff, 0x331000, 0x88aaff],
+      buildingEmissive: 0x8800ff,
+      buildingEmissiveIntensity: 2.2,
+      buildingMetalness: 0.65,
+      buildingRoughness: 0.5,
+      buildingHeightMult: 1.5,
+      groundHex: '#0d0018',
+      roadHex: '#080010',
+      parkHex: '#1a0028',
+      waterHex: '#8800ff',
+      particleColor: 0xcc44ff,
+      particleCount: 900,
+      particleSize: 0.55,
+      particleSpeed: 0.015,
+      particleSpread: 180,
+      roofShapeMix: ['jagged', 'pyramid'],
+      showGraffiti: true,
+      treeColor: 0x440055,
+      treeTrunkColor: 0x1a0022,
+      glitch: true,
+    },
+    figure: `
+      <g class="fig-crash01" style="animation: glitch-split 0.8s steps(1) infinite; transform-origin: 50% 50%;">
+        <!-- Left half: volcanic (Thrak) -->
+        <path d="M22,4 L10,14 L6,30 L12,46 L22,52 Z" fill="rgba(255,68,0,0.2)" stroke="#ff4400" stroke-width="2"/>
+        <line x1="14" y1="12" x2="12" y2="28" stroke="#ff4400" stroke-width="2" opacity="0.8"/>
+        <line x1="12" y1="28" x2="16" y2="38" stroke="#ff6600" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="16" cy="22" r="4" fill="#ff2200" opacity="0.9"/>
+        <circle cx="16" cy="22" r="2" fill="#ffaa00"/>
+        <!-- Right half: crystal (Zyrax) -->
+        <path d="M22,4 L34,14 L38,30 L32,46 L22,52 Z" fill="rgba(68,136,255,0.2)" stroke="#4488ff" stroke-width="2"/>
+        <polygon points="30,8 36,18 32,24" fill="rgba(68,136,255,0.4)" stroke="#88bbff" stroke-width="1"/>
+        <polygon points="28,28 34,36 26,36" fill="rgba(100,160,255,0.3)" stroke="#aaccff" stroke-width="0.8"/>
+        <circle cx="28" cy="22" r="4" fill="#88aaff" opacity="0.9"/>
+        <circle cx="28" cy="22" r="2" fill="white"/>
+        <!-- Glitch split line -->
+        <line x1="22" y1="4" x2="22" y2="52" stroke="#ffffff" stroke-width="1.2" opacity="0.7" stroke-dasharray="3,3"/>
+        <!-- Mouth: half scowl, half data-line -->
+        <path d="M15,38 Q19,35 22,37" stroke="#ff4400" stroke-width="1.5" fill="none"/>
+        <line x1="22" y1="37" x2="29" y2="37" stroke="#88aaff" stroke-width="1.5" stroke-dasharray="2,1"/>
+        <!-- Glitch artifact bars -->
+        <rect x="6" y="30" width="9" height="2" fill="#4488ff" opacity="0.6"/>
+        <rect x="28" y="40" width="7" height="2" fill="#ff4400" opacity="0.5"/>
+        <rect x="10" y="16" width="5" height="1.5" fill="#ffffff" opacity="0.4"/>
+      </g>`,
+  },
+
+  // ── CRASH UNIVERSE 02: MORRA × LUMI × NIKO ────────────────────────────────
+  {
+    id: 'crash02',
+    name: 'LUMORRA',
+    planet: 'The Collapsing Carnival',
+    symbol: '✿✦',
+    personality: 'Chaotic · Luminous · Nose-First Wonder',
+    backstory:
+      'Three beings from entirely different sensory worlds tripped into each other at a ' +
+      'dimensional junction. Morra smells everything and sees almost nothing. Lumi sees ' +
+      'only mathematical skeletons. Niko sees everything as impossibly huge and magical. ' +
+      'Together they experience Weimar as a smell-lit wireframe carnival that goes on ' +
+      'forever, smells incredible, and is slightly too tall for comfort. They are, ' +
+      'against all odds, having the time of their lives.',
+    color: '#00ffcc',
+    theme: {
+      skyTop: 0x020805,
+      skyBot: 0x0f1e18,
+      fogColor: 0x0a1810,
+      fogNear: 20,
+      fogFar: 130,
+      groundColor: 0x080f0a,
+      groundEmissive: 0x336655,
+      ambientColor: 0x88ffcc,
+      ambientIntensity: 2.4,
+      sunColor: 0xffffff,
+      sunIntensity: 2.8,
+      fillColor: 0xff77cc,
+      fillIntensity: 1.4,
+      buildingPalette: [0x1a2e1a, 0xffffff, 0xff77cc, 0x00ffaa, 0x222222, 0xddddff],
+      buildingEmissive: 0x00ff88,
+      buildingEmissiveIntensity: 0.9,
+      buildingMetalness: 0.1,
+      buildingRoughness: 0.75,
+      buildingHeightMult: 0.8,
+      groundHex: '#080f0a',
+      roadHex: '#060c08',
+      parkHex: '#0c1e10',
+      waterHex: '#00ffaa',
+      particleColor: 0x88ffcc,
+      particleCount: 3000,
+      particleSize: 0.2,
+      particleSpeed: 0.004,
+      particleSpread: 210,
+      roofShapeMix: ['dome', 'flat', 'bubble'],
+      treeColor: 0xaaffcc,
+      treeTrunkColor: 0x224422,
+      playgroundGlow: true,
+      playgroundEmissive: 0x00ffaa,
+      playgroundEmissiveIntensity: 3.5,
+      glitch: true,
+    },
+    figure: `
+      <g class="fig-crash02" style="animation: lumorra-chaos 1.4s ease-in-out infinite; transform-origin: 50% 55%;">
+        <!-- Lumi orbital rings -->
+        <ellipse cx="22" cy="28" rx="20" ry="6" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1" transform="rotate(-25 22 28)"/>
+        <ellipse cx="22" cy="28" rx="17" ry="5" fill="none" stroke="rgba(0,255,170,0.5)" stroke-width="1" transform="rotate(50 22 28)"/>
+        <!-- Morra dog body (teal) -->
+        <ellipse cx="18" cy="38" rx="12" ry="7.5" fill="rgba(0,255,170,0.15)" stroke="#00ffaa" stroke-width="1.5"/>
+        <!-- Head (mix: teal body, pink glow) -->
+        <circle cx="26" cy="22" r="9" fill="rgba(255,119,204,0.12)" stroke="#ff77cc" stroke-width="1.5"/>
+        <circle cx="26" cy="22" r="6" fill="none" stroke="rgba(0,255,170,0.3)" stroke-width="0.8"/>
+        <!-- Big left eye: teal (Morra) -->
+        <circle cx="21" cy="19" r="4.5" fill="white" opacity="0.95"/>
+        <circle cx="21" cy="19" r="3" fill="#00ffaa"/>
+        <circle cx="20" cy="18" r="1.5" fill="#003322"/>
+        <circle cx="21.5" cy="17.5" r="0.9" fill="white"/>
+        <!-- Big right eye: pink (Niko) -->
+        <circle cx="31" cy="19" r="4.5" fill="white" opacity="0.95"/>
+        <circle cx="31" cy="19" r="3" fill="#ff77cc"/>
+        <circle cx="30" cy="18" r="1.5" fill="#330022"/>
+        <circle cx="31.5" cy="17.5" r="0.9" fill="white"/>
+        <!-- Morra snout -->
+        <ellipse cx="32" cy="27" rx="4" ry="2.5" fill="rgba(0,200,130,0.3)" stroke="#00cc88" stroke-width="1"/>
+        <circle cx="33" cy="27" r="1.2" fill="#00ffaa" opacity="0.9"/>
+        <!-- Legs (teal) -->
+        <line x1="10" y1="45" x2="8"  y2="57" stroke="#00cc88" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="16" y1="46" x2="15" y2="58" stroke="#00cc88" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="22" y1="46" x2="23" y2="58" stroke="#00cc88" stroke-width="1.8" stroke-linecap="round"/>
+        <!-- Niko sparkle star -->
+        <polygon points="4,8 5.5,12 4,16 2.5,12" fill="#ffdd00" opacity="0.9"/>
+        <polygon points="4,10 8,11.5 4,13 0,11.5" fill="#ffdd00" opacity="0.9"/>
+        <!-- Smell wisps (Morra) -->
+        <path d="M34,24 Q40,17 38,10" stroke="#00ffaa" stroke-width="0.8" fill="none" opacity="0.5" stroke-dasharray="2,2"/>
+        <path d="M33,22 Q40,15 39,7" stroke="#00cc88" stroke-width="0.8" fill="none" opacity="0.4" stroke-dasharray="2,2"/>
+        <!-- Glitch artifact -->
+        <rect x="5" y="26" width="9" height="2" fill="#ff77cc" opacity="0.45"/>
+        <rect x="24" y="42" width="7" height="1.5" fill="#ffffff" opacity="0.35"/>
+      </g>`,
+  },
 ];
 
 export const DEFAULT_CHARACTER_ID = 'zyrax';
