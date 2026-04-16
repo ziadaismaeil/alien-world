@@ -161,6 +161,12 @@ function _updateInfo(idx) {
     hl.style.borderColor = char.color;
     hl.style.boxShadow   = `0 0 18px ${char.color}55, inset 0 0 18px ${char.color}0e`;
   }
+  const enterBtn = document.getElementById('wheel-enter-btn');
+  if (enterBtn) {
+    enterBtn.style.borderColor = char.color;
+    enterBtn.style.boxShadow   = `0 0 14px ${char.color}66, 0 0 28px ${char.color}33`;
+    enterBtn.style.color       = char.color;
+  }
 }
 
 // Smoothly animate the wheel to a target angle, then fire callback
@@ -369,6 +375,23 @@ export function buildCharPicker(onSelect, activeId) {
     ?.addEventListener('click', hideCharPicker);
   document.getElementById('char-picker-btn')
     ?.addEventListener('click', showCharPicker);
+
+  // Enter button — centre of the wheel — confirms current character
+  const enterBtn = document.getElementById('wheel-enter-btn');
+  if (enterBtn) {
+    const confirm = () => {
+      onSelect(CHARACTERS[_topIdx()].id);
+      hideCharPicker();
+    };
+    enterBtn.addEventListener('click', confirm);
+    // Touch: stopPropagation prevents the wheel drag from starting
+    enterBtn.addEventListener('touchstart', e => {
+      e.preventDefault(); e.stopPropagation();
+    }, { passive: false });
+    enterBtn.addEventListener('touchend', e => {
+      e.preventDefault(); e.stopPropagation(); confirm();
+    }, { passive: false });
+  }
 }
 
 export function showCharPicker() {

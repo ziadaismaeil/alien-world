@@ -272,13 +272,16 @@ body.phone-mode #char-picker-btn {
 }
 
 #char-picker-header {
+  position: absolute;
+  top: 0; left: 0; right: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 20px 14px;
-  flex-shrink: 0;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 10px 16px;
+  z-index: 30;
+  pointer-events: none;   /* let touches pass through empty space */
 }
+#char-picker-header > * { pointer-events: auto; }
 
 /* Row: wheel on left, info on right */
 #wheel-body {
@@ -382,6 +385,32 @@ body.phone-mode #char-picker-btn {
   /* CY - WHEEL_R = 94 - 74 = 20 → offset from centre = -74px */
   transform: translate(-50%, calc(-50% - 74px));
   transition: border-color 0.35s, box-shadow 0.35s;
+}
+
+/* Enter button — dead centre of the wheel */
+#wheel-enter-btn {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.5);
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  font-family: var(--font-main);
+  font-size: 7.5px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  z-index: 20;
+  backdrop-filter: blur(6px);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+  transition: border-color 0.35s, box-shadow 0.35s, background 0.15s;
+}
+#wheel-enter-btn:active {
+  background: rgba(255,255,255,0.15);
 }
 
 #wheel-track {
