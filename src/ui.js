@@ -100,12 +100,12 @@ export function hideLandingScreen() {
 
 // ── Spinning Wheel Character Picker ──────────────────────────────────────────
 
-const WHEEL_R    = 110;   // orbit radius (px)
-const SLOT_W     = 60;    // slot width  (px)
-const SLOT_H     = 76;    // slot height (px)
-const SCENE_SIZE = 280;   // scene square size (px)
-const CX         = SCENE_SIZE / 2;  // 140
-const CY         = SCENE_SIZE / 2;  // 140
+const WHEEL_R    = 64;    // orbit radius (px)
+const SLOT_W     = 38;    // slot width  (px)
+const SLOT_H     = 50;    // slot height (px)
+const SCENE_SIZE = 168;   // scene square size (px)
+const CX         = SCENE_SIZE / 2;  // 84
+const CY         = SCENE_SIZE / 2;  // 84
 
 let _wAngle    = 0;       // current wheel rotation (degrees)
 let _wVel      = 0;       // angular velocity (deg / frame)
@@ -149,9 +149,13 @@ function _updateInfo(idx) {
   const pln  = document.getElementById('wheel-sel-planet');
   const info = document.getElementById('wheel-selected-info');
   const hl   = document.getElementById('wheel-active-highlight');
+  const pers = document.getElementById('wheel-sel-personality');
+  const back = document.getElementById('wheel-sel-backstory');
   if (sym)  sym.textContent  = char.symbol;
   if (name) name.textContent = char.name;
   if (pln)  pln.textContent  = char.planet.toUpperCase();
+  if (pers) pers.textContent = char.personality;
+  if (back) back.textContent = char.backstory;
   if (info) info.style.color = char.color;
   if (hl) {
     hl.style.borderColor = char.color;
