@@ -712,8 +712,8 @@ document.getElementById('btn-phone').addEventListener('click', () => {
   hideLandingScreen();
   init();
   setupTouchControls();
-  // Build character picker and seed the button with the default character
-  buildCharPicker(selectCharacter);
+  // Build wheel picker and seed the button with the default character
+  buildCharPicker(selectCharacter, DEFAULT_CHARACTER_ID);
   const defaultChar = charMap[DEFAULT_CHARACTER_ID];
   if (defaultChar) updateCharPickerBtn(defaultChar);
 });
