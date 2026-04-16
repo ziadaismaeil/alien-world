@@ -304,9 +304,7 @@ body.phone-mode #char-picker-btn {
   flex-direction: column;
   justify-content: flex-start;
   flex-shrink: 0;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;    /* explicitly allow vertical scroll */
+  overflow: visible;
   min-height: 0;
 }
 #char-picker-title {
@@ -483,7 +481,10 @@ body.phone-mode #char-picker-btn {
   margin-top: 10px;
   border-left: 2px solid currentColor;
   padding-left: 10px;
-  /* fully readable — no clamp; right panel scrolls */
+  max-height: 38vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 #wheel-tap-hint {
   font-size: 7px;
