@@ -97,3 +97,66 @@ export function hideLandingScreen() {
   screen.classList.add('fade-out');
   setTimeout(() => screen.remove(), 900);
 }
+
+// ── Phone character picker ────────────────────────────────────────────────────
+
+export function buildCharPicker(onSelect) {
+  const grid = document.getElementById('char-picker-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  CHARACTERS.forEach((char, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'picker-char';
+    cell.dataset.id = char.id;
+    cell.style.setProperty('--char-color', char.color);
+
+    cell.innerHTML = `
+      <svg viewBox="${SVG_VIEWBOX}" xmlns="http://www.w3.org/2000/svg" class="picker-char-svg">
+        ${char.figure}
+      </svg>
+      <div class="picker-char-name">${char.name}</div>
+      <div class="picker-char-planet">${char.planet}</div>
+    `;
+
+    cell.addEventListener('click', () => {
+      onSelect(char.id);
+      hideCharPicker();
+    });
+
+    grid.appendChild(cell);
+  });
+
+  // Wire close button
+  const closeBtn = document.getElementById('char-picker-close');
+  if (closeBtn) closeBtn.addEventListener('click', hideCharPicker);
+
+  // Wire open button
+  const openBtn = document.getElementById('char-picker-btn');
+  if (openBtn) openBtn.addEventListener('click', showCharPicker);
+}
+
+export function showCharPicker() {
+  const modal = document.getElementById('char-picker-modal');
+  if (modal) modal.classList.add('open');
+}
+
+export function hideCharPicker() {
+  const modal = document.getElementById('char-picker-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+export function updateCharPickerBtn(char) {
+  const btn = document.getElementById('char-picker-btn');
+  if (!btn) return;
+  btn.style.setProperty('--picker-color', char.color);
+  btn.style.borderColor = char.color + '55';
+  btn.style.boxShadow = `0 0 16px ${char.color}33`;
+  document.getElementById('picker-btn-symbol').textContent = char.symbol;
+  document.getElementById('picker-btn-name').textContent = char.name;
+
+  // Highlight active cell in grid
+  document.querySelectorAll('.picker-char').forEach(c => {
+    c.classList.toggle('active', c.dataset.id === char.id);
+  });
+}

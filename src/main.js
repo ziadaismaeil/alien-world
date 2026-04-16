@@ -6,7 +6,7 @@ import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
 import { WeimarWorld, WORLD_SPREAD } from './world.js';
 import { CHARACTERS, DEFAULT_CHARACTER_ID } from './characters.js';
 import { Player, ParentWatcher, MeatOwner, keys } from './player.js';
-import { buildUI, setActiveCard, updateInfoPanel, setupLoreToggle, hideLoading, buildLandingCharacters, hideLandingScreen } from './ui.js';
+import { buildUI, setActiveCard, updateInfoPanel, setupLoreToggle, hideLoading, buildLandingCharacters, hideLandingScreen, buildCharPicker, updateCharPickerBtn } from './ui.js';
 import { createLabels, updateLabelColors } from './labels.js';
 
 // ── Renderer ─────────────────────────────────────────────────────────────────
@@ -288,6 +288,7 @@ window.addEventListener('keydown', e => {
 
 // ── Character State ───────────────────────────────────────────────────────────
 
+let phoneMode        = false;
 let activeCharacter  = null;
 let parentWatcher    = null;
 let meatOwner        = null;
@@ -369,6 +370,8 @@ function selectCharacter(id) {
   fogColorTarget.setHex(t.fogColor);
   fogNearTarget = t.fogNear * WS;
   fogFarTarget  = t.fogFar  * WS;
+
+  if (phoneMode) updateCharPickerBtn(char);
 }
 
 // ── Resize ────────────────────────────────────────────────────────────────────
@@ -668,6 +671,9 @@ function init() {
 // ── Phone mode touch controls ──────────────────────────────────────────────────
 
 function setupTouchControls() {
+  phoneMode = true;
+  document.body.classList.add('phone-mode');
+
   const controls = document.getElementById('touch-controls');
   if (!controls) return;
   controls.classList.add('active');
@@ -706,4 +712,8 @@ document.getElementById('btn-phone').addEventListener('click', () => {
   hideLandingScreen();
   init();
   setupTouchControls();
+  // Build character picker and seed the button with the default character
+  buildCharPicker(selectCharacter);
+  const defaultChar = charMap[DEFAULT_CHARACTER_ID];
+  if (defaultChar) updateCharPickerBtn(defaultChar);
 });

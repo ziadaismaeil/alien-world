@@ -199,6 +199,183 @@ canvas#canvas {
   50%       { opacity: 0.7; transform: translateX(-50%) scaleX(1.3); }
 }
 
+/* ── Phone: hide sidebar panel in phone mode ─────────── */
+body.phone-mode #character-panel  { display: none; }
+body.phone-mode #character-info   { display: none; }
+body.phone-mode #lore-toggle      { display: none; }
+body.phone-mode #controls-hint    { display: none; }
+
+/* ── Phone: Character Picker Button ──────────────────── */
+#char-picker-btn {
+  display: none; /* shown only in phone mode */
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 60;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px 10px 12px;
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 14px;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(12px);
+  color: #fff;
+  cursor: pointer;
+  font-family: var(--font-main);
+  transition: border-color 0.3s, box-shadow 0.3s;
+  -webkit-tap-highlight-color: transparent;
+}
+body.phone-mode #char-picker-btn {
+  display: flex;
+}
+#char-picker-btn:active {
+  background: rgba(255,255,255,0.1);
+}
+#picker-btn-symbol {
+  font-size: 26px;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px var(--picker-color, #4488ff));
+}
+#picker-btn-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+#picker-btn-name {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: var(--picker-color, #4488ff);
+}
+#picker-btn-hint {
+  font-size: 7px;
+  letter-spacing: 2px;
+  opacity: 0.45;
+  text-transform: uppercase;
+}
+
+/* ── Phone: Character Picker Modal ───────────────────── */
+#char-picker-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  background: rgba(0, 0, 8, 0.92);
+  backdrop-filter: blur(16px);
+  flex-direction: column;
+  transition: opacity 0.3s;
+}
+#char-picker-modal.open {
+  display: flex;
+}
+
+#char-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 24px 16px;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+#char-picker-title {
+  font-size: 11px;
+  letter-spacing: 4px;
+  opacity: 0.55;
+  text-transform: uppercase;
+}
+#char-picker-close {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.7);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-main);
+  -webkit-tap-highlight-color: transparent;
+}
+#char-picker-close:active { background: rgba(255,255,255,0.15); }
+
+/* 3-column grid of characters */
+#char-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 20px 16px 32px;
+  overflow-y: auto;
+  flex: 1;
+  align-content: start;
+}
+
+.picker-char {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 8px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s, background 0.25s;
+  -webkit-tap-highlight-color: transparent;
+  animation: landing-dance 1.5s ease-in-out infinite;
+}
+.picker-char::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 100%,
+    var(--char-color, #4488ff) 0%, transparent 65%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.picker-char:active,
+.picker-char.active { border-color: var(--char-color, #4488ff); background: rgba(255,255,255,0.07); }
+.picker-char.active::before { opacity: 0.18; }
+
+.picker-char-svg {
+  width: 52px;
+  height: 68px;
+  filter: drop-shadow(0 0 8px var(--char-color, #4488ff));
+  overflow: visible;
+}
+.picker-char-name {
+  font-size: 7px;
+  letter-spacing: 2px;
+  color: var(--char-color, #fff);
+  opacity: 0.75;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+}
+.picker-char-planet {
+  font-size: 6px;
+  letter-spacing: 1px;
+  opacity: 0.35;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
+}
+
+/* Stagger the grid dance animations */
+.picker-char:nth-child(1) { animation-delay: 0s;    }
+.picker-char:nth-child(2) { animation-delay: 0.18s; }
+.picker-char:nth-child(3) { animation-delay: 0.36s; }
+.picker-char:nth-child(4) { animation-delay: 0.12s; }
+.picker-char:nth-child(5) { animation-delay: 0.30s; }
+.picker-char:nth-child(6) { animation-delay: 0.48s; }
+.picker-char:nth-child(7) { animation-delay: 0.06s; }
+.picker-char:nth-child(8) { animation-delay: 0.24s; }
+.picker-char:nth-child(9) { animation-delay: 0.42s; }
+
 /* ── Touch Controls (phone mode) ─────────────────────── */
 #touch-controls {
   position: fixed;
