@@ -300,12 +300,12 @@ function selectCharacter(id) {
   const char = charMap[id];
   if (!char || activeCharacter?.id === id) return;
 
-  const wasNiko  = activeCharacter?.id === 'niko';
-  const isNiko   = id === 'niko';
+  const wasNiko  = activeCharacter?.id === 'niko'  || activeCharacter?.id === 'crash02';
+  const isNiko   = id === 'niko'  || id === 'crash02';
   const wasVex   = activeCharacter?.id === 'vex';
   const isVex    = id === 'vex';
-  const wasMorra = activeCharacter?.id === 'morra';
-  const isMorra  = id === 'morra';
+  const wasMorra = activeCharacter?.id === 'morra' || activeCharacter?.id === 'crash02';
+  const isMorra  = id === 'morra' || id === 'crash02';
   const wasSolen = activeCharacter?.id === 'solen';
   const isSolen  = id === 'solen';
 
@@ -423,9 +423,9 @@ function animate() {
   // Parent watcher follows Niko
   if (parentWatcher) parentWatcher.update(player.getPosition(), delta);
 
-  // Playground proximity glow (only meaningful when Niko, but updates fade-out too)
+  // Playground proximity glow (Niko + LUMORRA crash)
   if (activeCharacter) {
-    const isNiko = activeCharacter.id === 'niko';
+    const isNiko = activeCharacter.id === 'niko' || activeCharacter.id === 'crash02';
     world.updatePlaygroundProximity(
       player.getPosition().x,
       player.getPosition().z,
@@ -479,8 +479,8 @@ function animate() {
     if (!isVex && _pendingDoor) { _pendingDoor = null; _updateBuildingHud(null, false); }
   }
 
-  // ── Morra dog mechanics ───────────────────────────────────────────────────
-  const isMorra = activeCharacter?.id === 'morra';
+  // ── Morra dog mechanics (+ LUMORRA crash) ────────────────────────────────
+  const isMorra = activeCharacter?.id === 'morra' || activeCharacter?.id === 'crash02';
   if (isMorra) {
     const px = player.getPosition().x;
     const pz = player.getPosition().z;

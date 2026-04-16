@@ -667,6 +667,9 @@ export const CHARACTERS = [
       roofShapeMix: ['dome', 'flat', 'bubble'],
       treeColor: 0xaaffcc,
       treeTrunkColor: 0x224422,
+      playgroundGlow: true,
+      playgroundEmissive: 0x00ffaa,
+      playgroundEmissiveIntensity: 3.5,
       glitch: true,
     },
     figure: `
