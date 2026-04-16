@@ -329,8 +329,8 @@ body.phone-mode #char-picker-btn {
 /* ── Spinning wheel ───────────────────────────────────── */
 #wheel-scene {
   position: relative;
-  width: 168px;
-  height: 168px;
+  width: 188px;
+  height: 188px;
   flex-shrink: 0;
   cursor: grab;
   user-select: none;
@@ -369,17 +369,17 @@ body.phone-mode #char-picker-btn {
 /* Glowing highlight frame at top (active slot) */
 #wheel-active-highlight {
   position: absolute;
-  width: 44px;
-  height: 56px;
-  border-radius: 10px;
+  width: 54px;
+  height: 70px;
+  border-radius: 12px;
   border: 2px solid #4488ff;
-  box-shadow: 0 0 14px #4488ff55, inset 0 0 14px #4488ff0e;
+  box-shadow: 0 0 16px #4488ff55, inset 0 0 16px #4488ff0e;
   pointer-events: none;
   z-index: 5;
   top: 50%;
   left: 50%;
-  /* CY - WHEEL_R = 84 - 64 = 20 → offset from centre = -64px */
-  transform: translate(-50%, calc(-50% - 64px));
+  /* CY - WHEEL_R = 94 - 74 = 20 → offset from centre = -74px */
+  transform: translate(-50%, calc(-50% - 74px));
   transition: border-color 0.35s, box-shadow 0.35s;
 }
 
@@ -392,14 +392,14 @@ body.phone-mode #char-picker-btn {
 /* Each character slot — positioned by JS */
 .wheel-slot {
   position: absolute;
-  width: 38px;
-  height: 50px;
+  width: 48px;
+  height: 62px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
   cursor: pointer;
-  transform-origin: 19px 25px;
+  transform-origin: 24px 31px;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -427,13 +427,13 @@ body.phone-mode #char-picker-btn {
 }
 
 .wheel-slot-svg {
-  width: 30px;
-  height: 38px;
-  filter: drop-shadow(0 0 5px var(--char-color, #4488ff));
+  width: 38px;
+  height: 48px;
+  filter: drop-shadow(0 0 6px var(--char-color, #4488ff));
   overflow: visible;
 }
 .wheel-slot-name {
-  font-size: 5px;
+  font-size: 5.5px;
   letter-spacing: 1px;
   color: var(--char-color, #fff);
   opacity: 0.7;
@@ -442,54 +442,55 @@ body.phone-mode #char-picker-btn {
 }
 
 /* Selected info panel — right column */
+#wheel-right {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
 #wheel-selected-info {
   text-align: left;
   width: 100%;
   transition: color 0.35s;
 }
 #wheel-sel-symbol {
-  font-size: 26px;
+  font-size: 32px;
   line-height: 1;
 }
 #wheel-sel-name {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 900;
   letter-spacing: 3px;
-  margin-top: 6px;
+  margin-top: 8px;
   text-transform: uppercase;
 }
 #wheel-sel-planet {
-  font-size: 7px;
+  font-size: 9px;
   letter-spacing: 2px;
   opacity: 0.4;
-  margin-top: 3px;
+  margin-top: 4px;
   text-transform: uppercase;
 }
 #wheel-sel-personality {
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: 1.5px;
-  opacity: 0.7;
-  margin-top: 10px;
+  opacity: 0.75;
+  margin-top: 12px;
   font-style: italic;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 #wheel-sel-backstory {
-  font-size: 8.5px;
-  line-height: 1.65;
-  opacity: 0.45;
+  font-size: 10px;
+  line-height: 1.7;
+  opacity: 0.5;
   margin-top: 10px;
   border-left: 2px solid currentColor;
-  padding-left: 9px;
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  padding-left: 10px;
+  /* fully readable — no clamp; right panel scrolls */
 }
 #wheel-tap-hint {
-  font-size: 6.5px;
+  font-size: 7px;
   letter-spacing: 1.5px;
   opacity: 0.2;
-  margin-top: 14px;
+  margin-top: 16px;
   text-transform: uppercase;
 }
 

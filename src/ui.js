@@ -100,12 +100,12 @@ export function hideLandingScreen() {
 
 // ── Spinning Wheel Character Picker ──────────────────────────────────────────
 
-const WHEEL_R    = 64;    // orbit radius (px)
-const SLOT_W     = 38;    // slot width  (px)
-const SLOT_H     = 50;    // slot height (px)
-const SCENE_SIZE = 168;   // scene square size (px)
-const CX         = SCENE_SIZE / 2;  // 84
-const CY         = SCENE_SIZE / 2;  // 84
+const WHEEL_R    = 74;    // orbit radius (px)
+const SLOT_W     = 48;    // slot width  (px)
+const SLOT_H     = 62;    // slot height (px)
+const SCENE_SIZE = 188;   // scene square size (px)
+const CX         = SCENE_SIZE / 2;  // 94
+const CY         = SCENE_SIZE / 2;  // 94
 
 let _wAngle    = 0;       // current wheel rotation (degrees)
 let _wVel      = 0;       // angular velocity (deg / frame)
@@ -219,50 +219,106 @@ function _runMomentum() {
   _wRaf = requestAnimationFrame(loop);
 }
 
-// Attach drag / touch events to the scene element
+// Attach circular-drag events to the scene element.
+// The wheel rotates by the same angular amount the finger travels around
+// the wheel centre — drag anywhere, move in a full circle, wheel follows.
 function _attachEvents(scene) {
-  let dragging = false;
-  let lastX    = 0;
-  const hist   = [];            // [{x, t}] — last 80 ms of moves
-  const SENS   = 0.75;          // degrees per px of drag
+  let dragging      = false;
+  let activeTouchId = null;
+  let lastAngle     = 0;
+  const hist        = [];   // [{angle, t}] — last 80 ms for velocity
 
-  const onStart = (x) => {
-    dragging = true;
-    lastX    = x;
+  // Angle (degrees) of a pointer position relative to wheel centre.
+  // 0° = 12 o'clock, increases clockwise (matches wheel convention).
+  function ptrAngle(clientX, clientY) {
+    const r = scene.getBoundingClientRect();
+    const cx = r.left + r.width  / 2;
+    const cy = r.top  + r.height / 2;
+    return Math.atan2(clientX - cx, -(clientY - cy)) * 180 / Math.PI;
+  }
+
+  // Shortest signed delta between two angles (handles ±180° wrap)
+  function angDelta(from, to) {
+    let d = to - from;
+    if (d >  180) d -= 360;
+    if (d < -180) d += 360;
+    return d;
+  }
+
+  const onStart = (clientX, clientY) => {
+    dragging  = true;
+    lastAngle = ptrAngle(clientX, clientY);
     hist.length = 0;
-    hist.push({ x, t: performance.now() });
+    hist.push({ angle: lastAngle, t: performance.now() });
     _wVel = 0;
     if (_wRaf) { cancelAnimationFrame(_wRaf); _wRaf = null; }
   };
-  const onMove = (x) => {
+
+  const onMove = (clientX, clientY) => {
     if (!dragging) return;
-    _wAngle += (x - lastX) * SENS;
-    lastX    = x;
+    const angle = ptrAngle(clientX, clientY);
+    const delta = angDelta(lastAngle, angle);
+    _wAngle  += delta;
+    lastAngle = angle;
     const now = performance.now();
-    hist.push({ x, t: now });
+    hist.push({ angle, t: now });
     while (hist.length > 1 && now - hist[0].t > 80) hist.shift();
     _draw();
     _updateInfo(_topIdx());
   };
+
   const onEnd = () => {
     if (!dragging) return;
-    dragging = false;
+    dragging      = false;
+    activeTouchId = null;
     if (hist.length >= 2) {
       const f = hist[0], l = hist[hist.length - 1];
       const dt = l.t - f.t;
-      if (dt > 4) _wVel = (l.x - f.x) * SENS / (dt / 16);
+      if (dt > 4) {
+        const d = angDelta(f.angle, l.angle);
+        _wVel = d / (dt / 16);
+      }
     }
-    _wVel = Math.max(-32, Math.min(32, _wVel));
+    _wVel = Math.max(-28, Math.min(28, _wVel));
     _runMomentum();
   };
 
-  scene.addEventListener('touchstart',  e => { e.preventDefault(); onStart(e.touches[0].clientX); }, { passive: false });
-  scene.addEventListener('touchmove',   e => { e.preventDefault(); onMove(e.touches[0].clientX); },  { passive: false });
-  scene.addEventListener('touchend',    e => { e.preventDefault(); onEnd(); }, { passive: false });
-  scene.addEventListener('touchcancel', e => { e.preventDefault(); onEnd(); }, { passive: false });
-  scene.addEventListener('mousedown',   e => onStart(e.clientX));
-  window.addEventListener('mousemove',  e => onMove(e.clientX));
-  window.addEventListener('mouseup',    ()  => onEnd());
+  // Touch — start on scene, move/end tracked on window so circular
+  // dragging works even when the finger leaves the scene bounds.
+  scene.addEventListener('touchstart', e => {
+    if (activeTouchId !== null) return;
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    activeTouchId = t.identifier;
+    onStart(t.clientX, t.clientY);
+  }, { passive: false });
+
+  window.addEventListener('touchmove', e => {
+    if (activeTouchId === null) return;
+    for (const t of e.changedTouches) {
+      if (t.identifier === activeTouchId) {
+        e.preventDefault();
+        onMove(t.clientX, t.clientY);
+        break;
+      }
+    }
+  }, { passive: false });
+
+  window.addEventListener('touchend', e => {
+    for (const t of e.changedTouches) {
+      if (t.identifier === activeTouchId) { onEnd(); break; }
+    }
+  });
+  window.addEventListener('touchcancel', e => {
+    for (const t of e.changedTouches) {
+      if (t.identifier === activeTouchId) { onEnd(); break; }
+    }
+  });
+
+  // Mouse support for desktop testing
+  scene.addEventListener('mousedown', e => onStart(e.clientX, e.clientY));
+  window.addEventListener('mousemove', e => { if (dragging) onMove(e.clientX, e.clientY); });
+  window.addEventListener('mouseup',   () => { if (dragging) onEnd(); });
 }
 
 export function buildCharPicker(onSelect, activeId) {
