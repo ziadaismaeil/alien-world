@@ -454,56 +454,50 @@ body.phone-mode #char-picker-btn {
   right: 0;
   z-index: 50;
   display: none;
-  pointer-events: none;
+  pointer-events: none;   /* always passthrough — children opt-in individually */
   align-items: flex-end;
   justify-content: space-between;
   padding: 0 28px;
 }
-#touch-controls.active {
-  display: flex;
-  pointer-events: auto;
-}
+#touch-controls.active { display: flex; }
 
-#dpad {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
+/* Joystick */
+#joystick-zone {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  pointer-events: none;  /* outer shell is passthrough */
   user-select: none;
 }
-.dpad-row {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-.dpad-center {
-  width: 44px;
-  height: 44px;
-  background: rgba(255,255,255,0.04);
-  border-radius: 6px;
-}
-.dpad-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.25);
-  background: rgba(0,0,0,0.55);
-  color: rgba(255,255,255,0.8);
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+#joystick-outer {
+  position: absolute;
+  width: 106px;
+  height: 106px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.22);
+  background: rgba(0,0,0,0.45);
   backdrop-filter: blur(6px);
-  transition: background 0.1s;
-  -webkit-tap-highlight-color: transparent;
+  pointer-events: auto;   /* this element catches all touches */
   touch-action: none;
+  -webkit-tap-highlight-color: transparent;
 }
-.dpad-btn:active, .dpad-btn.pressed {
-  background: rgba(100,150,255,0.35);
-  border-color: rgba(100,150,255,0.6);
+#joystick-inner {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.50);
+  border: 2px solid rgba(255,255,255,0.75);
+  box-shadow: 0 0 12px rgba(100,150,255,0.45);
+  pointer-events: none;
+  will-change: transform;
 }
 
+/* Camera button */
 #touch-cam-btn {
   width: 58px;
   height: 58px;
@@ -519,6 +513,7 @@ body.phone-mode #char-picker-btn {
   backdrop-filter: blur(6px);
   transition: background 0.1s;
   align-self: flex-end;
+  pointer-events: auto;   /* opt-in */
   -webkit-tap-highlight-color: transparent;
   touch-action: none;
 }
