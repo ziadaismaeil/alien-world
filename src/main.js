@@ -8,6 +8,7 @@ import { CHARACTERS, DEFAULT_CHARACTER_ID } from './characters.js';
 import { Player, ParentWatcher, MeatOwner, keys } from './player.js';
 import { buildUI, setActiveCard, updateInfoPanel, setupLoreToggle, hideLoading, buildLandingCharacters, hideLandingScreen, buildCharPicker, updateCharPickerBtn } from './ui.js';
 import { createLabels, updateLabelColors } from './labels.js';
+import { initAudio, playCharacterTheme } from './audio.js';
 
 // ── Renderer ─────────────────────────────────────────────────────────────────
 
@@ -311,6 +312,7 @@ function selectCharacter(id) {
   const isSolen  = id === 'solen';
 
   activeCharacter = char;
+  playCharacterTheme(id);
   setActiveCard(id);
   updateInfoPanel(char);
   updateLabelColors(char.color);
@@ -646,6 +648,7 @@ function init() {
 
   const defaultChar = charMap[DEFAULT_CHARACTER_ID];
   activeCharacter = defaultChar;
+  playCharacterTheme(DEFAULT_CHARACTER_ID);
   setActiveCard(DEFAULT_CHARACTER_ID);
   updateInfoPanel(defaultChar);
   updateLabelColors(defaultChar.color);
@@ -758,11 +761,13 @@ function setupTouchControls() {
 buildLandingCharacters();
 
 document.getElementById('btn-laptop').addEventListener('click', () => {
+  initAudio();
   hideLandingScreen();
   init();
 });
 
 document.getElementById('btn-phone').addEventListener('click', () => {
+  initAudio();
   hideLandingScreen();
   init();
   setupTouchControls();
