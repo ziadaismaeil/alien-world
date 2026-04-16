@@ -1,46 +1,53 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Dark space background -->
-  <circle cx="32" cy="32" r="32" fill="#0a0015"/>
+  <!-- Dark void background -->
+  <circle cx="32" cy="32" r="32" fill="#05003a"/>
 
   <!-- Outer glow ring -->
-  <circle cx="32" cy="32" r="28" fill="none" stroke="#ff4400" stroke-width="2" opacity="0.5"/>
+  <circle cx="32" cy="32" r="30" fill="none" stroke="#4488ff" stroke-width="0.8" opacity="0.35"/>
 
-  <!-- Planet body -->
-  <circle cx="32" cy="32" r="20" fill="#1a0400"/>
-  <circle cx="32" cy="32" r="20" fill="url(#planetGrad)"/>
+  <style>
+    @keyframes favicon-spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    .zyrax-body { transform-origin: 32px 32px; animation: favicon-spin 6s linear infinite; }
+  </style>
 
-  <!-- Lava crack lines on planet -->
-  <line x1="26" y1="20" x2="24" y2="36" stroke="#ff4400" stroke-width="1.5" opacity="0.8"/>
-  <line x1="24" y1="36" x2="30" y2="44" stroke="#ff6600" stroke-width="1.2" opacity="0.7"/>
-  <line x1="36" y1="22" x2="38" y2="34" stroke="#ff4400" stroke-width="1.2" opacity="0.6"/>
+  <g class="zyrax-body">
+    <!-- Outer hexagon crystal -->
+    <polygon points="32,6 52,18 52,42 32,54 12,42 12,18"
+             fill="rgba(68,136,255,0.15)" stroke="#4488ff" stroke-width="1.8"/>
+    <!-- Inner hexagon -->
+    <polygon points="32,14 46,22 46,38 32,46 18,38 18,22"
+             fill="rgba(136,170,255,0.1)" stroke="#88aaff" stroke-width="1.2"/>
 
-  <!-- Alien eye — the centrepiece -->
-  <ellipse cx="32" cy="30" rx="9" ry="6" fill="#000"/>
-  <ellipse cx="32" cy="30" rx="9" ry="6" fill="none" stroke="#ffff00" stroke-width="1.5"/>
-  <!-- Iris -->
-  <circle cx="32" cy="30" r="4.5" fill="#ff4400"/>
-  <!-- Pupil -->
-  <ellipse cx="32" cy="30" rx="2" ry="3.5" fill="#000"/>
-  <!-- Eye glow -->
-  <circle cx="32" cy="30" r="4.5" fill="none" stroke="#ffff00" stroke-width="0.8" opacity="0.9"/>
-  <!-- Eye glint -->
-  <circle cx="29.5" cy="28" r="1.2" fill="#ffffff" opacity="0.8"/>
+    <!-- Cross axis lines -->
+    <line x1="32" y1="6"  x2="32" y2="54" stroke="#4488ff" stroke-width="0.6" opacity="0.4"/>
+    <line x1="12" y1="30" x2="52" y2="30" stroke="#4488ff" stroke-width="0.6" opacity="0.4"/>
+    <line x1="12" y1="18" x2="52" y2="42" stroke="#4488ff" stroke-width="0.4" opacity="0.25"/>
+    <line x1="52" y1="18" x2="12" y2="42" stroke="#4488ff" stroke-width="0.4" opacity="0.25"/>
 
-  <!-- Orbit ring around planet -->
-  <ellipse cx="32" cy="32" rx="28" ry="8" fill="none" stroke="#ff6600" stroke-width="1.8" opacity="0.6" transform="rotate(-20 32 32)"/>
+    <!-- Eyes -->
+    <circle cx="24" cy="29" r="4"   fill="#88aaff" opacity="0.95"/>
+    <circle cx="40" cy="29" r="4"   fill="#88aaff" opacity="0.95"/>
+    <circle cx="24" cy="29" r="2"   fill="white"/>
+    <circle cx="40" cy="29" r="2"   fill="white"/>
+    <!-- Eye glow -->
+    <circle cx="24" cy="29" r="4.5" fill="none" stroke="#aaccff" stroke-width="0.8" opacity="0.6"/>
+    <circle cx="40" cy="29" r="4.5" fill="none" stroke="#aaccff" stroke-width="0.8" opacity="0.6"/>
 
-  <!-- Small star dots -->
-  <circle cx="8"  cy="10" r="1"   fill="#ffffff" opacity="0.7"/>
-  <circle cx="55" cy="14" r="0.8" fill="#ffffff" opacity="0.6"/>
-  <circle cx="12" cy="52" r="0.8" fill="#ffff00" opacity="0.8"/>
-  <circle cx="56" cy="50" r="1"   fill="#ffffff" opacity="0.5"/>
-  <circle cx="52" cy="8"  r="0.6" fill="#aaaaff" opacity="0.7"/>
+    <!-- Mouth triangle -->
+    <polygon points="32,38 27,45 37,45"
+             fill="none" stroke="#88aaff" stroke-width="1.2" opacity="0.7"/>
 
-  <defs>
-    <radialGradient id="planetGrad" cx="40%" cy="35%" r="60%">
-      <stop offset="0%"   stop-color="#552200"/>
-      <stop offset="60%"  stop-color="#1a0400"/>
-      <stop offset="100%" stop-color="#0a0200"/>
-    </radialGradient>
-  </defs>
+    <!-- Inner crystal core -->
+    <polygon points="32,20 38,26 38,34 32,40 26,34 26,26"
+             fill="rgba(100,150,255,0.12)" stroke="#aabbff" stroke-width="0.7" opacity="0.5"/>
+  </g>
+
+  <!-- Static star dots in corners (don't spin) -->
+  <circle cx="7"  cy="9"  r="1"   fill="#ffffff" opacity="0.6"/>
+  <circle cx="57" cy="12" r="0.8" fill="#aaccff" opacity="0.5"/>
+  <circle cx="9"  cy="56" r="0.7" fill="#ffffff" opacity="0.5"/>
+  <circle cx="56" cy="54" r="1"   fill="#4488ff" opacity="0.6"/>
 </svg>
