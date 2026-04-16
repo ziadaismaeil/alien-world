@@ -100,12 +100,12 @@ export function hideLandingScreen() {
 
 // ── Spinning Wheel Character Picker ──────────────────────────────────────────
 
-const WHEEL_R    = 74;    // orbit radius (px)
-const SLOT_W     = 48;    // slot width  (px)
-const SLOT_H     = 62;    // slot height (px)
-const SCENE_SIZE = 188;   // scene square size (px)
-const CX         = SCENE_SIZE / 2;  // 94
-const CY         = SCENE_SIZE / 2;  // 94
+let WHEEL_R    = 74;    // orbit radius (px)
+let SLOT_W     = 48;    // slot width  (px)
+let SLOT_H     = 62;    // slot height (px)
+let SCENE_SIZE = 188;   // scene square size (px)
+let CX         = SCENE_SIZE / 2;  // 94
+let CY         = SCENE_SIZE / 2;  // 94
 
 let _wAngle    = 0;       // current wheel rotation (degrees)
 let _wVel      = 0;       // angular velocity (deg / frame)
@@ -331,6 +331,25 @@ export function buildCharPicker(onSelect, activeId) {
   _wOnSelect = onSelect;
   _wActiveId = activeId ?? null;
   _wN        = CHARACTERS.length;
+
+  // Responsive: fill most of the left half in landscape orientation
+  SCENE_SIZE = Math.round(Math.min(window.innerWidth * 0.46, window.innerHeight * 0.82));
+  CX = CY   = SCENE_SIZE / 2;
+  WHEEL_R    = Math.round(SCENE_SIZE * 0.394);
+  SLOT_W     = Math.round(SCENE_SIZE * 0.255);
+  SLOT_H     = Math.round(SCENE_SIZE * 0.330);
+  const rs   = document.documentElement.style;
+  rs.setProperty('--wheel-sz',          SCENE_SIZE + 'px');
+  rs.setProperty('--wheel-r',           WHEEL_R    + 'px');
+  rs.setProperty('--wheel-slot-w',      SLOT_W     + 'px');
+  rs.setProperty('--wheel-slot-h',      SLOT_H     + 'px');
+  rs.setProperty('--wheel-slot-svg-w',  Math.round(SLOT_W * 0.792) + 'px');
+  rs.setProperty('--wheel-slot-svg-h',  Math.round(SLOT_H * 0.774) + 'px');
+  rs.setProperty('--wheel-hl-w',        (SLOT_W + 6)  + 'px');
+  rs.setProperty('--wheel-hl-h',        (SLOT_H + 8)  + 'px');
+  rs.setProperty('--wheel-btn-sz',      Math.round(SCENE_SIZE * 0.255) + 'px');
+  rs.setProperty('--wheel-btn-fs',      Math.max(7, Math.round(SCENE_SIZE * 0.040)) + 'px');
+  rs.setProperty('--wheel-slot-name-fs',Math.max(5, Math.round(SLOT_W  * 0.115)) + 'px');
 
   const track = document.getElementById('wheel-track');
   const scene = document.getElementById('wheel-scene');

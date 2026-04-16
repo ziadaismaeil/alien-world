@@ -350,8 +350,8 @@ body.phone-mode #char-picker-btn {
 /* ── Spinning wheel ───────────────────────────────────── */
 #wheel-scene {
   position: relative;
-  width: 188px;
-  height: 188px;
+  width: var(--wheel-sz, 188px);
+  height: var(--wheel-sz, 188px);
   flex-shrink: 0;
   cursor: grab;
   user-select: none;
@@ -390,8 +390,8 @@ body.phone-mode #char-picker-btn {
 /* Glowing highlight frame at top (active slot) */
 #wheel-active-highlight {
   position: absolute;
-  width: 54px;
-  height: 70px;
+  width: var(--wheel-hl-w, 54px);
+  height: var(--wheel-hl-h, 70px);
   border-radius: 12px;
   border: 2px solid #4488ff;
   box-shadow: 0 0 16px #4488ff55, inset 0 0 16px #4488ff0e;
@@ -399,8 +399,7 @@ body.phone-mode #char-picker-btn {
   z-index: 5;
   top: 50%;
   left: 50%;
-  /* CY - WHEEL_R = 94 - 74 = 20 → offset from centre = -74px */
-  transform: translate(-50%, calc(-50% - 74px));
+  transform: translate(-50%, calc(-50% - var(--wheel-r, 74px)));
   transition: border-color 0.35s, box-shadow 0.35s;
 }
 
@@ -409,13 +408,13 @@ body.phone-mode #char-picker-btn {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 48px; height: 48px;
+  width: var(--wheel-btn-sz, 48px); height: var(--wheel-btn-sz, 48px);
   border-radius: 50%;
   border: 2px solid rgba(255,255,255,0.5);
   background: rgba(0,0,0,0.75);
   color: #fff;
   font-family: var(--font-main);
-  font-size: 7.5px;
+  font-size: var(--wheel-btn-fs, 7.5px);
   font-weight: 900;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -439,8 +438,8 @@ body.phone-mode #char-picker-btn {
 /* Each character slot — positioned by JS */
 .wheel-slot {
   position: absolute;
-  width: 48px;
-  height: 62px;
+  width: var(--wheel-slot-w, 48px);
+  height: var(--wheel-slot-h, 62px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -474,13 +473,13 @@ body.phone-mode #char-picker-btn {
 }
 
 .wheel-slot-svg {
-  width: 38px;
-  height: 48px;
+  width: var(--wheel-slot-svg-w, 38px);
+  height: var(--wheel-slot-svg-h, 48px);
   filter: drop-shadow(0 0 6px var(--char-color, #4488ff));
   overflow: visible;
 }
 .wheel-slot-name {
-  font-size: 5.5px;
+  font-size: var(--wheel-slot-name-fs, 5.5px);
   letter-spacing: 1px;
   color: var(--char-color, #fff);
   opacity: 0.7;
