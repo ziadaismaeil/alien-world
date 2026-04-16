@@ -2519,8 +2519,10 @@ export class WeimarWorld {
       }
       b.mat.needsUpdate = true;
 
-      // Roof switch
-      const rs = theme.roofShape;
+      // Roof switch (supports roofShapeMix for crash universes)
+      const rs = theme.roofShapeMix
+        ? theme.roofShapeMix[i % theme.roofShapeMix.length]
+        : theme.roofShape;
       if (b.activeRoof !== rs) {
         Object.keys(b.roofMeshes).forEach(k => { b.roofMeshes[k].visible = (k === rs); });
         b.activeRoof = rs;
