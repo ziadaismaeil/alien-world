@@ -333,7 +333,7 @@ export function buildCharPicker(onSelect, activeId) {
   _wN        = CHARACTERS.length;
 
   // Responsive: fill most of the left half in landscape orientation
-  SCENE_SIZE = Math.round(Math.min(window.innerWidth * 0.46, window.innerHeight * 0.82));
+  SCENE_SIZE = Math.round(Math.min(window.innerWidth * 0.40, window.innerHeight * 0.68));
   CX = CY   = SCENE_SIZE / 2;
   WHEEL_R    = Math.round(SCENE_SIZE * 0.394);
   SLOT_W     = Math.round(SCENE_SIZE * 0.255);

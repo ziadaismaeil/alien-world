@@ -290,7 +290,7 @@ body.phone-mode #char-picker-btn {
   flex-direction: row;
   align-items: stretch;   /* stretch so #wheel-right gets a real height */
   min-height: 0;
-  padding-top: 40px;      /* clear the absolute-positioned header */
+  padding-top: 58px;      /* clear the absolute-positioned header */
 }
 
 #wheel-left {
