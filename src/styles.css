@@ -285,7 +285,7 @@ body.phone-mode #char-picker-btn {
   flex: 1;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: stretch;   /* stretch so #wheel-right gets a real height */
   min-height: 0;
 }
 
@@ -299,11 +299,14 @@ body.phone-mode #char-picker-btn {
 
 #wheel-right {
   width: 50%;
-  padding: 0 20px 0 8px;
+  padding: 16px 20px 16px 10px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   flex-shrink: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;    /* explicitly allow vertical scroll */
   min-height: 0;
 }
 #char-picker-title {
@@ -442,10 +445,6 @@ body.phone-mode #char-picker-btn {
 }
 
 /* Selected info panel — right column */
-#wheel-right {
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
 #wheel-selected-info {
   text-align: left;
   width: 100%;
