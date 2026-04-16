@@ -33,16 +33,53 @@
     </div>
   </div>
 
+  <!-- Phone: Character Picker Button (top-left, shown in phone mode) -->
+  <button id="char-picker-btn">
+    <span id="picker-btn-symbol">◆</span>
+    <div id="picker-btn-text">
+      <span id="picker-btn-name">ZYRAX</span>
+      <span id="picker-btn-hint">tap to switch ▾</span>
+    </div>
+  </button>
+
+  <!-- Phone: Character Picker Modal -->
+  <div id="char-picker-modal">
+    <div id="char-picker-header">
+      <span id="char-picker-title">SPIN YOUR REALITY</span>
+      <button id="char-picker-close">×</button>
+    </div>
+    <div id="wheel-body">
+      <!-- Left: spinning wheel -->
+      <div id="wheel-left">
+        <div id="wheel-scene">
+          <div id="wheel-pointer">▼</div>
+          <div id="wheel-ring"></div>
+          <div id="wheel-active-highlight"></div>
+          <div id="wheel-track">
+            <!-- Slots injected by ui.js -->
+          </div>
+        </div>
+      </div>
+      <!-- Right: character info -->
+      <div id="wheel-right">
+        <div id="wheel-selected-info">
+          <div id="wheel-sel-symbol"></div>
+          <div id="wheel-sel-name"></div>
+          <div id="wheel-sel-planet"></div>
+          <div id="wheel-sel-personality"></div>
+          <div id="wheel-sel-backstory"></div>
+          <div id="wheel-tap-hint">tap · spin to change</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Touch Controls (phone mode only) -->
   <div id="touch-controls">
-    <div id="dpad">
-      <button class="dpad-btn" id="dpad-up">▲</button>
-      <div class="dpad-row">
-        <button class="dpad-btn" id="dpad-left">◄</button>
-        <div class="dpad-center"></div>
-        <button class="dpad-btn" id="dpad-right">►</button>
+    <div id="joystick-zone">
+      <div id="joystick-outer">
+        <div id="joystick-inner"></div>
       </div>
-      <button class="dpad-btn" id="dpad-down">▼</button>
     </div>
     <button id="touch-cam-btn">CAM<br><small>C</small></button>
   </div>

@@ -6,7 +6,7 @@ import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
 import { WeimarWorld, WORLD_SPREAD } from './world.js';
 import { CHARACTERS, DEFAULT_CHARACTER_ID } from './characters.js';
 import { Player, ParentWatcher, MeatOwner, keys } from './player.js';
-import { buildUI, setActiveCard, updateInfoPanel, setupLoreToggle, hideLoading, buildLandingCharacters, hideLandingScreen } from './ui.js';
+import { buildUI, setActiveCard, updateInfoPanel, setupLoreToggle, hideLoading, buildLandingCharacters, hideLandingScreen, buildCharPicker, updateCharPickerBtn } from './ui.js';
 import { createLabels, updateLabelColors } from './labels.js';
 
 // ── Renderer ─────────────────────────────────────────────────────────────────
@@ -288,6 +288,7 @@ window.addEventListener('keydown', e => {
 
 // ── Character State ───────────────────────────────────────────────────────────
 
+let phoneMode        = false;
 let activeCharacter  = null;
 let parentWatcher    = null;
 let meatOwner        = null;
@@ -369,6 +370,8 @@ function selectCharacter(id) {
   fogColorTarget.setHex(t.fogColor);
   fogNearTarget = t.fogNear * WS;
   fogFarTarget  = t.fogFar  * WS;
+
+  if (phoneMode) updateCharPickerBtn(char);
 }
 
 // ── Resize ────────────────────────────────────────────────────────────────────
@@ -668,25 +671,82 @@ function init() {
 // ── Phone mode touch controls ──────────────────────────────────────────────────
 
 function setupTouchControls() {
-  const controls = document.getElementById('touch-controls');
-  if (!controls) return;
-  controls.classList.add('active');
+  phoneMode = true;
+  document.body.classList.add('phone-mode');
 
-  function bindDpad(id, key) {
-    const btn = document.getElementById(id);
-    if (!btn) return;
-    const press   = () => { keys[key] = true;  btn.classList.add('pressed'); };
-    const release = () => { keys[key] = false; btn.classList.remove('pressed'); };
-    btn.addEventListener('touchstart',  e => { e.preventDefault(); press(); },   { passive: false });
-    btn.addEventListener('touchend',    e => { e.preventDefault(); release(); }, { passive: false });
-    btn.addEventListener('touchcancel', e => { e.preventDefault(); release(); }, { passive: false });
+  const overlay = document.getElementById('touch-controls');
+  if (!overlay) return;
+  overlay.classList.add('active');
+
+  // ── Virtual joystick ────────────────────────────────────────────────────────
+  const joystickOuter = document.getElementById('joystick-outer');
+  const joystickInner = document.getElementById('joystick-inner');
+  const MAX_RADIUS    = 38;   // px — how far the knob can travel
+  const DEAD_ZONE     = 0.20; // normalised — ignore tiny nudges
+  let joyTouchId = null;
+  let joyOriginX = 0, joyOriginY = 0;
+
+  function applyJoystick(clientX, clientY) {
+    let dx = clientX - joyOriginX;
+    let dy = clientY - joyOriginY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist > MAX_RADIUS) { dx = dx / dist * MAX_RADIUS; dy = dy / dist * MAX_RADIUS; }
+    joystickInner.style.transform =
+      `translate(calc(-50% + ${dx.toFixed(1)}px), calc(-50% + ${dy.toFixed(1)}px))`;
+    const nx = dx / MAX_RADIUS;
+    const ny = dy / MAX_RADIUS;
+    keys.w = ny < -DEAD_ZONE;
+    keys.s = ny >  DEAD_ZONE;
+    keys.a = nx < -DEAD_ZONE;
+    keys.d = nx >  DEAD_ZONE;
   }
 
-  bindDpad('dpad-up',    'w');
-  bindDpad('dpad-down',  's');
-  bindDpad('dpad-left',  'a');
-  bindDpad('dpad-right', 'd');
+  function resetJoystick() {
+    joystickInner.style.transform = 'translate(-50%, -50%)';
+    keys.w = keys.s = keys.a = keys.d = false;
+  }
 
+  if (joystickOuter) {
+    joystickOuter.addEventListener('touchstart', e => {
+      e.preventDefault();
+      if (joyTouchId !== null) return;
+      const t = e.changedTouches[0];
+      joyTouchId = t.identifier;
+      const r = joystickOuter.getBoundingClientRect();
+      joyOriginX = r.left + r.width  / 2;
+      joyOriginY = r.top  + r.height / 2;
+      applyJoystick(t.clientX, t.clientY);
+    }, { passive: false });
+
+    joystickOuter.addEventListener('touchmove', e => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        if (t.identifier === joyTouchId) { applyJoystick(t.clientX, t.clientY); break; }
+      }
+    }, { passive: false });
+
+    const onJoyEnd = (e) => {
+      for (const t of e.changedTouches) {
+        if (t.identifier === joyTouchId) { joyTouchId = null; resetJoystick(); break; }
+      }
+    };
+    joystickOuter.addEventListener('touchend',    onJoyEnd, { passive: false });
+    joystickOuter.addEventListener('touchcancel', onJoyEnd, { passive: false });
+
+    // Mouse support for desktop testing
+    joystickOuter.addEventListener('mousedown', e => {
+      const r = joystickOuter.getBoundingClientRect();
+      joyOriginX = r.left + r.width  / 2;
+      joyOriginY = r.top  + r.height / 2;
+      applyJoystick(e.clientX, e.clientY);
+      const onMove = me => applyJoystick(me.clientX, me.clientY);
+      const onUp   = ()  => { resetJoystick(); window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup',   onUp);
+    });
+  }
+
+  // ── Camera toggle button ────────────────────────────────────────────────────
   const camBtn = document.getElementById('touch-cam-btn');
   if (camBtn) {
     camBtn.addEventListener('touchstart', e => { e.preventDefault(); toggleCamera(); }, { passive: false });
@@ -706,4 +766,8 @@ document.getElementById('btn-phone').addEventListener('click', () => {
   hideLandingScreen();
   init();
   setupTouchControls();
+  // Build wheel picker and seed the button with the default character
+  buildCharPicker(selectCharacter, DEFAULT_CHARACTER_ID);
+  const defaultChar = charMap[DEFAULT_CHARACTER_ID];
+  if (defaultChar) updateCharPickerBtn(defaultChar);
 });
