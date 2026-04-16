@@ -10,6 +10,43 @@
 <body>
   <canvas id="canvas"></canvas>
 
+  <!-- Landing Screen -->
+  <div id="landing-screen">
+    <div id="landing-title">
+      <h1>ALIEN <em>/ WORLD</em></h1>
+      <p>∞ alien perspectives · one city · Weimar</p>
+    </div>
+    <div id="landing-buttons">
+      <button id="btn-laptop" class="landing-btn">
+        <span class="btn-icon">⌨</span>
+        <span class="btn-label">LAPTOP</span>
+        <span class="btn-sub">WASD + Mouse</span>
+      </button>
+      <button id="btn-phone" class="landing-btn">
+        <span class="btn-icon">📱</span>
+        <span class="btn-label">PHONE</span>
+        <span class="btn-sub">Touch Controls</span>
+      </button>
+    </div>
+    <div id="landing-characters">
+      <!-- Injected by ui.js -->
+    </div>
+  </div>
+
+  <!-- Touch Controls (phone mode only) -->
+  <div id="touch-controls">
+    <div id="dpad">
+      <button class="dpad-btn" id="dpad-up">▲</button>
+      <div class="dpad-row">
+        <button class="dpad-btn" id="dpad-left">◄</button>
+        <div class="dpad-center"></div>
+        <button class="dpad-btn" id="dpad-right">►</button>
+      </div>
+      <button class="dpad-btn" id="dpad-down">▼</button>
+    </div>
+    <button id="touch-cam-btn">CAM<br><small>C</small></button>
+  </div>
+
   <!-- Loading Screen -->
   <div id="loading-screen">
     <div class="loading-inner">

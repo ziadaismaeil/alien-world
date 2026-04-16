@@ -6,7 +6,7 @@ import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
 import { WeimarWorld, WORLD_SPREAD } from './world.js';
 import { CHARACTERS, DEFAULT_CHARACTER_ID } from './characters.js';
 import { Player, ParentWatcher, MeatOwner, keys } from './player.js';
-import { buildUI, setActiveCard, updateInfoPanel, setupLoreToggle, hideLoading } from './ui.js';
+import { buildUI, setActiveCard, updateInfoPanel, setupLoreToggle, hideLoading, buildLandingCharacters, hideLandingScreen } from './ui.js';
 import { createLabels, updateLabelColors } from './labels.js';
 
 // ── Renderer ─────────────────────────────────────────────────────────────────
@@ -665,4 +665,45 @@ function init() {
   setTimeout(hideLoading, 800);
 }
 
-init();
+// ── Phone mode touch controls ──────────────────────────────────────────────────
+
+function setupTouchControls() {
+  const controls = document.getElementById('touch-controls');
+  if (!controls) return;
+  controls.classList.add('active');
+
+  function bindDpad(id, key) {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    const press   = () => { keys[key] = true;  btn.classList.add('pressed'); };
+    const release = () => { keys[key] = false; btn.classList.remove('pressed'); };
+    btn.addEventListener('touchstart',  e => { e.preventDefault(); press(); },   { passive: false });
+    btn.addEventListener('touchend',    e => { e.preventDefault(); release(); }, { passive: false });
+    btn.addEventListener('touchcancel', e => { e.preventDefault(); release(); }, { passive: false });
+  }
+
+  bindDpad('dpad-up',    'w');
+  bindDpad('dpad-down',  's');
+  bindDpad('dpad-left',  'a');
+  bindDpad('dpad-right', 'd');
+
+  const camBtn = document.getElementById('touch-cam-btn');
+  if (camBtn) {
+    camBtn.addEventListener('touchstart', e => { e.preventDefault(); toggleCamera(); }, { passive: false });
+  }
+}
+
+// ── Landing page boot ─────────────────────────────────────────────────────────
+
+buildLandingCharacters();
+
+document.getElementById('btn-laptop').addEventListener('click', () => {
+  hideLandingScreen();
+  init();
+});
+
+document.getElementById('btn-phone').addEventListener('click', () => {
+  hideLandingScreen();
+  init();
+  setupTouchControls();
+});

@@ -71,3 +71,29 @@ export function hideLoading() {
   screen.classList.add('fade-out');
   setTimeout(() => screen.remove(), 900);
 }
+
+export function buildLandingCharacters() {
+  const container = document.getElementById('landing-characters');
+  if (!container) return;
+  CHARACTERS.forEach((char, i) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'landing-char';
+    wrapper.style.setProperty('--char-color', char.color);
+    wrapper.style.animationDelay = `${i * 0.22}s`;
+    wrapper.innerHTML = `
+      <div class="landing-char-glow"></div>
+      <svg viewBox="${SVG_VIEWBOX}" xmlns="http://www.w3.org/2000/svg" class="landing-char-svg">
+        ${char.figure}
+      </svg>
+      <div class="landing-char-name">${char.name}</div>
+    `;
+    container.appendChild(wrapper);
+  });
+}
+
+export function hideLandingScreen() {
+  const screen = document.getElementById('landing-screen');
+  if (!screen) return;
+  screen.classList.add('fade-out');
+  setTimeout(() => screen.remove(), 900);
+}
