@@ -290,7 +290,6 @@ body.phone-mode #char-picker-btn {
   flex-direction: row;
   align-items: stretch;   /* stretch so #wheel-right gets a real height */
   min-height: 0;
-  padding-top: 58px;      /* clear the absolute-positioned header */
 }
 
 #wheel-left {
@@ -299,11 +298,12 @@ body.phone-mode #char-picker-btn {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  padding-top: 58px;      /* push wheel below the absolute header */
 }
 
 #wheel-right {
   width: 50%;
-  padding: 4px 20px 16px 10px;
+  padding: 12px 20px 16px 10px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
